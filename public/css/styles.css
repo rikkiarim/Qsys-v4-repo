@@ -1,0 +1,87 @@
+body {
+  margin: 0;
+  font-family: 'Crimson Pro', serif;
+  background-color: #E5DCC3;
+  color: #9A9483;
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background-color: #C7BEA2;
+  color: #1A3636;
+  width: 240px;
+  height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  box-shadow: 6px 0 18px 0 rgba(154, 148, 131, 0.25), 
+              2px 0 6px 0 rgba(26, 54, 54, 0.12);
+  z-index: 10;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+.sidebar h2,
+.sidebar strong {
+  color: #9A9483; /* premium accent for headings */
+}
+.sidebar a {
+  color: #1A3636; /* link color - clear and dark */
+  text-decoration: none;
+  margin: 1rem 0;
+  display: block;
+  font-weight: bold;
+}
+.sidebar form button {
+  margin-top: 1rem;
+  background: #AAA492;
+  color: #1A3636;  /* dark button text */
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding-left: 280px;   /* or whatever your sidebar width is + some gap */
+  padding-right: 2rem;
+  padding-top: 0;        /* Set to 0 */
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+header {
+  background-color: #9A9483;
+  color: #E5DCC3;
+  padding: 1rem;
+  font-family: 'Nexa Bold', sans-serif;
+  margin-top: 0 !important;
+}
+header h1 {
+  color: #E5DCC3; /* strong contrast for page title */
+}
+header #datetime {
+  color: #E5DCC3;
+}
+
+footer {
+  background-color: #9A9483;
+  color: #E5DCC3;
+  padding: 1rem;
+  text-align: center;
+  margin-top: auto;
+}
+
+h2, h1 {
+  color: #1A3636 !important;  /* strong headings in content */
+}
+
+section {
+  color: #9A9483;  /* default body/content text */
+}

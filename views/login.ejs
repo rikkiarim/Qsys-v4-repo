@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QSys Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #E5DCC3;
+      font-family: 'Crimson Pro', serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 6px 36px 0 rgba(154, 148, 131, 0.18);
+      padding: 2.5rem 2rem 2rem 2rem;
+      min-width: 340px;
+      max-width: 94vw;
+      text-align: center;
+      position: relative;
+    }
+    .login-card h1 {
+      margin-bottom: 2rem;
+      color: #1A3636;
+      font-family: 'Nexa Bold', sans-serif;
+      letter-spacing: 1px;
+    }
+    .login-card input[type="email"],
+    .login-card input[type="password"] {
+      width: 90%;
+      padding: 0.85rem;
+      margin: 0.7rem 0;
+      border-radius: 12px;
+      border: 1px solid #C7BEA2;
+      background: #F6F1E7;
+      color: #1A3636;
+      font-size: 1rem;
+    }
+    .login-card button {
+      background: #9A9483;
+      color: #E5DCC3;
+      border: none;
+      padding: 0.7rem 2.5rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      margin-top: 1.5rem;
+      cursor: pointer;
+      font-family: 'Nexa Bold', sans-serif;
+      box-shadow: 0 2px 8px 0 rgba(154, 148, 131, 0.12);
+      transition: background 0.2s;
+    }
+    .login-card button:disabled {
+      background: #AAA492;
+      cursor: not-allowed;
+    }
+    .login-card button:hover:not(:disabled), .login-card button:focus:not(:disabled) {
+      background: #AAA492;
+    }
+    .spinner {
+      border: 5px solid #E5DCC3;
+      border-top: 5px solid #9A9483;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      animation: spin 1s linear infinite;
+      margin: 1.2rem auto;
+      display: none;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .prompt-msg {
+      font-size: 1rem;
+      font-weight: bold;
+      margin: 1rem 0;
+      color: #c03232;
+    }
+    .prompt-msg.success {
+      color: #2f8845;
+    }
+  </style>
+</head>
+<body>
+  <form class="login-card" id="loginForm" method="POST" action="/login" autocomplete="off">
+    <h1>QSys Login</h1>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="prompt-msg"><%= error %></div>
+    <% } %>
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="prompt-msg success"><%= success %></div>
+    <% } %>
+    <input type="email" name="email" placeholder="Email address" required autofocus />
+    <input type="password" name="password" placeholder="Password" required />
+    <button type="submit" id="loginBtn">Login</button>
+    <div class="spinner" id="spinner"></div>
+  </form>
+  <% if (typeof success !== 'undefined' && success) { %>
+  <script>
+    setTimeout(function() {
+      window.location.href = "<%= (role === 'admin') ? '/admin' : '/reception' %>";
+    }, 1300); // 1.3 seconds delay
+  </script>
+<% } %>
+
+  <script>
+    // Show spinner on submit, disable button
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      document.getElementById('loginBtn').disabled = true;
+      document.getElementById('spinner').style.display = 'block';
+    });
+  </script>
+</body>
+</html>

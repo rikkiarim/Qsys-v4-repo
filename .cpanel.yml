@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export NODE_ENV=production
+    - /bin/echo "Starting deployment..."
+    - npm install --production
+    - /bin/echo "Restarting app..."
+    - /usr/local/bin/refresh-app Qsys-v4

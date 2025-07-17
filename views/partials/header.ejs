@@ -1,0 +1,10 @@
+<header>
+  <h1>Dashboard</h1>
+  <div id="datetime">Manila Time: <span id="time"></span></div>
+  <script>
+    setInterval(() => {
+      const options = { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('time').textContent = new Date().toLocaleTimeString('en-PH', options);
+    }, 1000);
+  </script>
+</header>
