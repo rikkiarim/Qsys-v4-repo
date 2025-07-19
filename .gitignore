@@ -1,0 +1,39 @@
+# Node modules (do NOT commit dependencies)
+node_modules/
+
+# Local environment variables (never commit credentials)
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/project files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Output/build
+dist/
+build/
+coverage/
+tmp/
+temp/
+
+# OS junk
+ehthumbs.db
+*.swp
+
+# Optional: Ignore uploads/temp files if you store user uploads
+public/uploads/
+public/temp/

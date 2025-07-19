@@ -1,15 +1,15 @@
-<h2>One Gourmet - Queueing System</h2>
-<div>User: <%= user ? user.email : '' %></div>
-<nav>
-  <% if (user && user.role === 'admin') { %>
-    <a href="/admin">Dashboard</a>
-    <a href="/admin/branches">Branch Mgmt</a>
-    <a href="/admin/users">Users</a>
-    <a href="/admin/reports">Reports</a>
-    <!-- Add other admin links -->
-  <% } %>
-  <!-- No navs for staff -->
-</nav>
-<form action="/logout" method="POST">
-  <button type="submit">Logout</button>
-</form>
+<div class="sidebar">
+  <h2>One Gourmet - Queueing System</h2>
+  <div>User: <%= user ? user.email : '' %></div>
+  <nav>
+    <% if (user && user.role === 'admin') { %>
+      <a href="/admin">Dashboard</a>
+      <a href="/admin/branches">Branch Mgmt</a>
+      <a href="/admin/users">Users</a>
+      <a href="/admin/reports">Reports</a>
+    <% } %>
+  </nav>
+  <form action="/logout" method="POST">
+    <button type="submit">Logout</button>
+  </form>
+</div>

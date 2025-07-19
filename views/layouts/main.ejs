@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <%- include('../partials/head') %>
+  <title><%= typeof title !== 'undefined' ? title : 'QSys' %></title>
+
+  <link rel="stylesheet" href="/css/styles.css" />
+  <!-- your head elements here -->
 </head>
 <body>
-  <div class="sidebar">
-    <%- include('../partials/sidebar') %>
-  </div>
+  <%- include('../partials/sidebar', { user }) %>
   <div class="main-content">
-    <%- include('../partials/header') %>
-    <%- include(page) %>
+    <%- include('../partials/header', { user }) %>
+
+    <main>
+      <%- body %>
+    </main>
+
     <%- include('../partials/footer') %>
   </div>
 </body>

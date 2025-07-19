@@ -1,3 +1,16 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nexa+Bold&display=swap');
+body, html {
+  font-family: 'Crimson Pro', serif;
+  /* For Nexa Bold, you can apply it selectively to headings */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Nexa Bold', sans-serif;
+}
+
+
 body {
   margin: 0;
   font-family: 'Crimson Pro', serif;
@@ -84,4 +97,43 @@ h2, h1 {
 
 section {
   color: #9A9483;  /* default body/content text */
+}
+
+.login-input {
+  width: 90%;
+  padding: 0.85rem;
+  margin: 0.7rem 0;
+  border-radius: 12px;
+  border: 1px solid #C7BEA2;
+  background: #F6F1E7;
+  color: #1A3636;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.login-card {
+  position: relative;
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 350px;
+  margin: 4rem auto;
+  box-shadow:
+  0 0 10px rgba(0,0,0,0.1),
+  inset 8px 0 15px -5px rgba(136, 126, 108, 0.5),  /* left edge */
+  inset -8px 0 15px -5px rgba(136, 126, 108, 0.5); /* right edge */
+}
+
+/* Add a vertical glowing line on the right edge */
+.login-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(136,126,108,0.5), transparent);
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  pointer-events: none; /* doesn't interfere with clicks */
 }
