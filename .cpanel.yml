@@ -1,8 +1,8 @@
----
+# .cpanel.yml
+# Automatic deployment config for cPanel Git Version Control
 deployment:
   tasks:
     - export NODE_ENV=production
-    - /usr/local/bin/npm install
-    - /usr/local/bin/npm run build   # Only if you have a build script
-    - /usr/local/bin/npm run migrate # Only if you have migrations
-    - /usr/local/bin/pm2 restart all # Or whatever you use to restart Node.js
+    - npm install --production
+    - echo "Starting deployment..."
+    - /usr/local/bin/refresh-app Qsys-v4
