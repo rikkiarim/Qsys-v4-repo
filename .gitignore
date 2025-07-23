@@ -39,3 +39,4 @@ public/uploads/
 public/temp/
 
 config/serviceAccountKey.json
+node_modules/
