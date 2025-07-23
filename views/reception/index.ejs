@@ -1,7 +1,31 @@
 <% layout('layouts/main') %>
+<%
+  title     = 'Reception Dashboard';
+  pageTitle = 'Reception Dashboard';
+%>
 
-<section class="dashboard-content">
-  <h2>Reception Dashboard</h2>
-  <p>Welcome, <%= user.email || user.name %>! You are logged in as <strong><%= user.role %></strong>.</p>
-  <p>This is your dummy dashboard content.</p>
-</section>
+<div class="queue-groups">
+  <% ['A','B','C'].forEach(group => { %>
+    <section class="queue-column" data-group="<%= group %>">
+      <h2>Group <%= group %></h2>
+      <ul id="group-<%= group %>" class="queue-list"></ul>
+    </section>
+  <% }) %>
+</div>
+
+<script>
+// @ts-nocheck
+  // DEBUG
+  console.log('🔥 RECEPTION_BRANCH:', '<%= user.assignedBranch || "" %>');
+  console.log('🔥 RECEPTION_DATE_KEY:', '<%= dateKey %>');
+  console.log('🔥 FIREBASE_CONFIG:', <%- JSON.stringify(firebaseConfig) %>);
+
+  // Expose globals for the client script
+  window.RECEPTION_BRANCH   = '<%= user.assignedBranch || "" %>';
+  window.RECEPTION_DATE_KEY = '<%= dateKey %>';
+  window.FIREBASE_CONFIG    = <%- JSON.stringify(firebaseConfig) %>;
+</script>
+
+
+
+<script type="module" src="/js/reception.js" defer></script>

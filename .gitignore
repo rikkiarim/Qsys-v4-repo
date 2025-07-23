@@ -37,3 +37,5 @@ ehthumbs.db
 # Optional: Ignore uploads/temp files if you store user uploads
 public/uploads/
 public/temp/
+
+config/serviceAccountKey.json

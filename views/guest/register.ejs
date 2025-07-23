@@ -1,0 +1,35 @@
+
+<% title = 'Guest Registration'; hideSidebar = true; %>
+<% layout('layouts/main') %>
+<style>
+  /* 1) Hide the clock & “Next update” text in the header */
+  header .current-time,
+  header .next-refresh {
+    display: none !important;
+  }
+
+  /* 2) Center the page title */
+  header.site-header {
+    justify-content: center !important;
+  }
+</style>
+<div class="guest-register-container">
+  <div class="guest-register-card">
+    <h2>Reserve your seat</h2>
+    <form id="guestRegisterForm" action="/guest/register/<%= branchCode %>" method="POST">
+      <div class="form-group">
+        <label for="name">Name <span>*</span></label>
+        <input type="text" id="name" name="name" required autocomplete="off" maxlength="30" />
+      </div>
+      <div class="form-group">
+        <label for="pax">Number of Guests <span>*</span></label>
+        <input type="text" id="pax" name="pax" required autocomplete="off" maxlength="3" />
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number (Optional)</label>
+        <input type="tel" id="phone" name="phone" maxlength="15" pattern="[0-9\- ]*" />
+      </div>
+      <button class="cta-btn" type="submit">Join Queue</button>
+    </form>
+  </div>
+</div>

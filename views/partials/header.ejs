@@ -1,13 +1,12 @@
-<header>
-  <h1>Dashboard</h1>
-  <div id="datetime">Manila Time: <span id="time"></span></div>
-  <div>User: <%= user?.email || user?.name || 'Guest' %></div>
+<header class="site-header <%= hideSidebar ? 'header-center' : '' %>">
+  <!-- always show the title -->
+  <h1 class="page-title"><%= title %></h1>
 
-  <script>
-    setInterval(() => {
-      const options = { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-      document.getElementById('time').textContent = new Date().toLocaleTimeString('en-PH', options);
-    }, 1000);
-    
-  </script>
+  <!-- only render clock/countdown when hideSidebar is false -->
+  <% if (!hideSidebar) { %>
+    <div class="header-extras">
+      <span class="current-time"></span>
+      <span class="next-refresh"></span>
+    </div>
+  <% } %>
 </header>

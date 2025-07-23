@@ -137,3 +137,186 @@ section {
   border-bottom-right-radius: 1rem;
   pointer-events: none; /* doesn't interfere with clicks */
 }
+.guest-register-container, .guest-confirm-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.guest-register-card, .guest-confirm-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(80,175,129,0.08);
+  max-width: 350px;
+  width: 100%;
+  text-align: center;
+}
+
+.guest-register-card h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.form-group label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #bdbdbd;
+  font-size: 1rem;
+}
+
+.cta-btn {
+  width: 100%;
+  padding: 0.75rem 0;
+  background: #508D4E;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s;
+}
+.cta-btn:hover, .cta-btn:focus {
+  background: #1A5319;
+}
+
+body.hide-sidebar .main-content {
+  padding-left: 0 !important;
+}
+.queue-number {
+  font-size: 7rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem;
+  color: #508D4E; /* Or your brand green */
+  letter-spacing: 2px;
+}
+.queue-name {
+  font-size: 1.25rem;
+  color: #333;
+}
+
+/* Header wrapper */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #508D4E; /* Olive Green */
+  padding: 1rem;
+  color: #D6EFD8;            /* Light Mint text */
+}
+
+/* Left side: title + branch */
+.header-left {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Right side: time, shift & countdown */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: 'Raleway', sans-serif;
+}
+
+/* Time display */
+#time {
+  font-weight: bold;
+}
+
+/* Refresh countdown */
+#refresh-countdown {
+  font-variant-numeric: tabular-nums;
+}
+
+.queue-groups {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.queue-column {
+  flex: 1;
+}
+
+.queue-list {
+  list-style: none;
+  padding: 0;
+}
+
+.queue-item {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  margin-bottom: 0.5rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.queue-item.called {
+  background-color: #fdebd0; /* highlight called */
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.actions button {
+  flex: 1;
+}
+
+/* Base header layout */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: #508D4E;
+}
+
+/* Center the title when sidebar (and extras) are hidden */
+.site-header.header-center {
+  justify-content: center;
+}
+
+/* Title styling */
+.page-title {
+  margin: 0;
+  color: #ffffff;
+  font-family: 'Nexa Bold', sans-serif;
+  font-size: 1.5rem;
+}
+
+/* Clock + countdown block */
+.header-extras {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+/* Remove the left gutter on full‐width (hide‐sidebar) pages */
+.main-content--full {
+  margin-left: 0 !important;
+  padding: 0 !important;
+  width: 100vw;
+}

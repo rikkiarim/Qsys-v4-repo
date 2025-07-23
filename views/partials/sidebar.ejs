@@ -1,15 +1,26 @@
-<div class="sidebar">
+<aside class="sidebar">
   <h2>One Gourmet - Queueing System</h2>
-  <div>User: <%= user ? user.email : '' %></div>
-  <nav>
-    <% if (user && user.role === 'admin') { %>
+
+  <div class="user-info">
+    <div>User: <%= user ? user.email : '' %></div>
+    <% if (user && user.assignedBranch) { %>
+      <div>Branch: <%= user.assignedBranch %></div>
+    <% } %>
+  </div>
+
+  <nav class="sidebar-nav">
+    <% if (user.role === 'admin') { %>
       <a href="/admin">Dashboard</a>
       <a href="/admin/branches">Branch Mgmt</a>
       <a href="/admin/users">Users</a>
       <a href="/admin/reports">Reports</a>
+    <% } else if (user.role === 'staff') { %>
+      <a href="/reception">Reception</a>
+      <a href="/reception/display" target="_blank">External Display</a>
     <% } %>
   </nav>
-  <form action="/logout" method="POST">
+
+  <form action="/logout" method="POST" class="sidebar-logout">
     <button type="submit">Logout</button>
   </form>
-</div>
+</aside>

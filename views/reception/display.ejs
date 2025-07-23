@@ -1,0 +1,156 @@
+<% 
+  // Layout settings
+  title       = 'Now Serving';
+  hideSidebar = true;
+%>
+<% layout('layouts/main') %>
+
+<section class="external-display">
+  <h1 class="display-title"><%= title %></h1>
+
+  <!-- Called guests will render here -->
+  <div id="serving-list" class="serving-list"></div>
+
+  <!-- Empty message -->
+  <p id="no-one" class="no-one">No guests are currently being called.</p>
+
+  <!-- Proceed instruction -->
+  <p id="proceed-text" class="proceed-text">Please proceed to the reception to be seated.</p>
+</section>
+
+<style>
+  .external-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #ffffff;
+    text-align: center;
+  }
+  .display-title {
+    font-family: 'Nexa Bold', sans-serif;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    color: #3E362E;
+  }
+  .serving-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .serving-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .queue-no {
+    font-family: 'Nexa Bold', sans-serif;
+    font-size: 6rem;
+    font-weight: bold;
+    color: #865D36;
+  }
+  .guest-name {
+    font-family: 'Crimson Pro', serif;
+    font-size: 2.5rem;
+    color: #3E362E;
+  }
+  .no-one {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.5rem;
+    color: #93785B;
+    margin-bottom: 2rem;
+  }
+  .proceed-text {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.25rem;
+    color: #508D4E;
+  }
+</style>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    orderBy,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+  // Grab passed-in variables
+  const firebaseConfig = <%- JSON.stringify(firebaseConfig) %>;
+  const branch         = "<%= branch %>";
+  const dateKey        = "<%= dateKey %>";
+  const cats           = ["A","B","C"];
+
+  // Initialize Firestore
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  // UI references
+  const listEl     = document.getElementById("serving-list");
+  const noOneEl    = document.getElementById("no-one");
+  const proceedEl  = document.getElementById("proceed-text");
+
+  // Aggregate called guests from all categories
+  let calledGuests = [];
+
+  function render() {
+    // Clear
+    listEl.innerHTML = "";
+    if (calledGuests.length === 0) {
+      noOneEl.style.display    = "block";
+      proceedEl.style.display  = "none";
+      return;
+    }
+    noOneEl.style.display    = "none";
+    proceedEl.style.display  = "block";
+
+    // Render each guest
+    calledGuests.forEach(g => {
+      const item = document.createElement("div");
+      item.className = "serving-item";
+      item.innerHTML = `
+        <div class="queue-no">${g.queueNo}</div>
+        <div class="guest-name">${g.name}</div>
+      `;
+      listEl.appendChild(item);
+    });
+  }
+
+  // Listen on each category for status=='called'
+  cats.forEach(cat => {
+    const q = query(
+      collection(db, "queues", branch, dateKey, cat, "list"),
+      where("status", "==", "called"),
+      orderBy("timestamp", "asc")
+    );
+    onSnapshot(q, snap => {
+      // Rebuild calledGuests
+      // Start fresh, then push each in order
+      calledGuests = calledGuests.filter(g => g.group !== cat);
+      const newOnes = [];
+      snap.forEach(doc => {
+        newOnes.push({
+          queueNo: `${cat}${doc.id}`,
+          name:    doc.data().name,
+          group:   cat
+        });
+      });
+      // Merge: remove old of this cat, append new ones
+      // Then sort globally by queueNo or timestamp if preferred
+      calledGuests = [
+        ...calledGuests,
+        ...newOnes
+      ];
+      render();
+    });
+  });
+
+  // Initial render
+  render();
+</script>

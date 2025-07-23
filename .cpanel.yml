@@ -2,7 +2,7 @@
 deployment:
   tasks:
     - export NODE_ENV=production
-    - /bin/echo "Starting deployment..."
-    - npm install --production
-    - /bin/echo "Restarting app..."
-    - /usr/local/bin/refresh-app Qsys-v4
+    - /usr/local/bin/npm install
+    - /usr/local/bin/npm run build   # Only if you have a build script
+    - /usr/local/bin/npm run migrate # Only if you have migrations
+    - /usr/local/bin/pm2 restart all # Or whatever you use to restart Node.js

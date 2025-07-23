@@ -1,0 +1,37 @@
+<% /*
+   Override header title + hide header extras on this page
+*/ %>
+<% title = 'Queue Confirmation'; %>
+<% hideSidebar = true; %>
+<% layout('layouts/main'); %>
+
+<section class="guest-confirmation">
+  <div class="confirmation-details">
+    <p class="queue-label">Your queue number is</p>
+    <p class="queue-number"><%= queueNumber %></p>
+    <p>Name: <%= name %></p>
+    <p>Thank you for queueing. Please keep this page open <br/> or take a screenshot of this page and wait to be seated.</p>
+  </div>
+</section>
+
+<style>
+  .confirmation-details {
+    text-align: center;
+    font-family: 'Crimson Pro', serif;
+    line-height: 1.6;
+    max-width: 360px;
+    margin: 2rem auto;
+  }
+  .queue-label {
+    font-family: 'Nexa Bold', sans-serif;
+    font-size: 1.25rem;
+    color: #3E362E;
+    margin: 0;
+  }
+  .queue-number {
+    font-size: 6rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+    color: #865D36;
+  }
+</style>

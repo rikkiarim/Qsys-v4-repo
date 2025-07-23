@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title><%= typeof title !== 'undefined' ? title : 'QSys' %></title>
-
+  <title><%= title || 'QSys' %></title>
   <link rel="stylesheet" href="/css/styles.css" />
-  <!-- your head elements here -->
 </head>
-<body>
-  <%- include('../partials/sidebar', { user }) %>
-  <div class="main-content">
-    <%- include('../partials/header', { user }) %>
+<%
+  // Defaults
+  if (typeof hideSidebar === 'undefined') hideSidebar = false;
+  if (typeof pageTitle   === 'undefined') pageTitle   = title;
+  if (typeof user        === 'undefined' || !user) user = {};
+%>
+<body class="<%= hideSidebar ? 'hide-sidebar' : '' %>">
+  <% if (!hideSidebar) { %>
+    <%- include('../partials/sidebar', { user }) %>
+  <% } %>
+
+  <div class="main-content <%= hideSidebar ? 'main-content--full' : '' %>">
+    <!-- pass only title + hideSidebar into header -->
+    <%- include('../partials/header', {
+      title:       pageTitle,
+      hideSidebar: hideSidebar
+    }) %>
 
     <main>
       <%- body %>
@@ -17,5 +28,7 @@
 
     <%- include('../partials/footer') %>
   </div>
+
+  <script src="/js/header-time.js" defer></script>
 </body>
 </html>
