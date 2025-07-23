@@ -15,7 +15,7 @@ if (!FIREBASE_PROJECT_ID ||
     !FIREBASE_CLIENT_EMAIL ||
     !FIREBASE_PRIVATE_KEY) {
   throw new Error(
-    'Missing one of FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, or FIREBASE_PRIVATE_KEY in environment'
+    'Missing one of FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, or FIREBASE_PRIVATE_KEY in environment.'
   );
 }
 
