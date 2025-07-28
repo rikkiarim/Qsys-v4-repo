@@ -60,16 +60,14 @@ router.post('/login', async (req, res) => {
   console.log("📧 CLIENT_EMAIL:", process.env.FIREBASE_CLIENT_EMAIL);
   console.log("🔑 PRIVATE_KEY (first 50 chars):", process.env.FIREBASE_PRIVATE_KEY?.substring(0, 50));
   const debugEntry = JSON.stringify({
+  time:             new Date().toISOString(),
+  apiKey:           process.env.FIREBASE_API_KEY,
+  authDomain:       process.env.FIREBASE_AUTH_DOMAIN,
+  rawPrivateKey:    process.env.FIREBASE_PRIVATE_KEY?.substring(0, 50),
+  decodedPrivateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n').substring(0, 50),
+  body:             req.body
+}) + '\n';
 
-    time:       new Date().toISOString(),
-
-    apiKey:     process.env.FIREBASE_API_KEY,
-
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.substring(0, 50),
-    body:       req.body
-
-  }) + '\n';
 
   fs.appendFileSync(path.join(__dirname, '../login-debug.log'), debugEntry);
 
