@@ -93,17 +93,22 @@
           </tbody>
         </table>
       </div>
-      <!-- Pagination Controls -->
-      <% if (users && users.length > 0) { %>
-        <div class="pagination-controls" style="display:flex;justify-content:flex-end;gap:1.2rem;margin-top:1.1rem;">
-          <% if (hasPrev) { %>
-            <a class="btn btn-small" href="/admin/users?direction=prev&cursor=<%= prevCursor %>">Previous</a>
-          <% } %>
-          <% if (hasNext) { %>
-            <a class="btn btn-small" href="/admin/users?direction=next&cursor=<%= nextCursor %>">Next</a>
-          <% } %>
-        </div>
-      <% } %>
+      <!-- Pagination Controls (Branch-style, always shown) -->
+      <div class="pagination-controls">
+        <button class="btn btn-small user-pager-btn"
+                style="min-width:72px;"
+                <%= hasPrev ? '' : 'disabled' %>
+                onclick="if(this.disabled)return; window.location.href='/admin/users?direction=prev&cursor=<%= prevCursor %>';">
+          Prev
+        </button>
+        <button class="btn btn-small user-pager-btn"
+                style="min-width:72px;"
+                <%= hasNext ? '' : 'disabled' %>
+                onclick="if(this.disabled)return; window.location.href='/admin/users?direction=next&cursor=<%= nextCursor %>';">
+          Next
+        </button>
+        <span class="pagination-info" style="color:#888;margin-left:0.7rem;">Page size: <%= pageSize || 10 %></span>
+      </div>
     </div>
   </div>
 </section>
@@ -223,5 +228,36 @@ document.getElementById('userSearch').addEventListener('keyup', function() {
 @media (max-width: 600px) {
   .data-table { font-size: 0.98rem; min-width: 500px; }
   .table-responsive { padding-bottom: 1rem; }
+}
+/* Pagination styling (like branches) */
+.pagination-controls {
+  margin-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+}
+.user-pager-btn {
+  background: #fff;
+  color: #508D4E;
+  border: 1.5px solid #c0ccb9;
+  font-weight: 700;
+  border-radius: 0.9rem;
+  box-shadow: none;
+  padding: 0.62rem 1.6rem;
+  transition: background 0.15s, color 0.15s;
+  min-width: 72px;
+}
+.user-pager-btn:disabled,
+.user-pager-btn[disabled] {
+  background: #f3f3e5;
+  color: #a5aa9c;
+  border-color: #e6e7db;
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+.user-pager-btn:not(:disabled):hover {
+  background: #508D4E;
+  color: #fff;
+  border-color: #508D4E;
 }
 </style>
