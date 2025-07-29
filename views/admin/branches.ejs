@@ -1,6 +1,6 @@
 <% layout('layouts/main') %>
-<section>
-  <h2>Branch Management</h2>
+<section style="max-width: 700px; margin: 2rem auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 16px rgba(80,141,78,0.09); padding: 2.5rem 2rem; font-family: 'Raleway', 'Montserrat', sans-serif;">
+  <h2 style="font-family: inherit; color: #1A5319; font-size: 2rem; margin-bottom: 1.5rem; font-weight: 800;">Branch Management</h2>
 
   <% if (success) { %>
     <div class="alert alert-success"><%= success %></div>
@@ -9,27 +9,35 @@
     <div class="alert alert-error"><%= error %></div>
   <% } %>
 
-  <form id="add-branch-form" action="/admin/branches/add" method="POST" style="margin-bottom:1.5rem;">
-    <input type="text" name="name" placeholder="Branch Name" required>
-    <input type="text" name="code" placeholder="Branch Code" required>
-    <button type="submit">Add Branch</button>
+  <form id="add-branch-form" action="/admin/branches/add" method="POST"
+    style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+    <input type="text" name="name" placeholder="Branch Name" required
+      style="flex:2; padding: 0.6rem 0.8rem; border: 1px solid #AC8968; border-radius: 10px; font-size:1rem;">
+    <input type="text" name="code" placeholder="Branch Code" required
+      style="flex:1; padding: 0.6rem 0.8rem; border: 1px solid #AC8968; border-radius: 10px; font-size:1rem;">
+    <button type="submit"
+      style="background: #508D4E; color: #fff; border: none; border-radius: 8px; padding: 0 1.4rem; font-weight: 700; font-size: 1rem; cursor:pointer; transition:.1s;">Add Branch</button>
   </form>
 
-  <div style="margin-bottom:1rem; display: flex; justify-content: space-between; align-items: center;">
-    <input id="branch-search" type="text" placeholder="Search by branch name..." value="<%= search || '' %>" autocomplete="off">
-    <span style="font-size: .9em; color: #888;"><%= branches.length %> result(s)</span>
+  <div style="margin-bottom:1.2rem; display: flex; align-items: center;">
+    <input id="branch-search" type="text" placeholder="Search by branch name..."
+      value="<%= search || '' %>" autocomplete="off"
+      style="flex: 1; padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid #AC8968; font-size: 1rem;">
   </div>
 
-  <div id="branches-table-container">
+  <div id="branches-table-container" style="overflow-x: auto;">
     <%- include('branches-table', { branches }) %>
   </div>
 
-  <div style="margin-top: 1rem;">
-    <button id="prev-page" <% if (!hasPrev) { %>disabled<% } %>>Prev</button>
-    <button id="next-page" <% if (!hasNext) { %>disabled<% } %>>Next</button>
-    <span style="font-size:.9em; color:#999;"> Page size: <%= pageSize %> </span>
+  <div style="margin-top: 1.7rem;">
+    <button id="prev-page" style="padding: .5rem 1.2rem; margin-right:.6rem; border-radius:7px; border:1px solid #AC8968; background:#F3F3F3; color:#93785B;"
+      <% if (!hasPrev) { %>disabled style="opacity:.6;"<% } %>>Prev</button>
+    <button id="next-page" style="padding: .5rem 1.2rem; border-radius:7px; border:1px solid #AC8968; background:#F3F3F3; color:#93785B;"
+      <% if (!hasNext) { %>disabled style="opacity:.6;"<% } %>>Next</button>
+    <span style="font-size:.97em; color:#999; margin-left:1.4rem;"> Page size: <%= pageSize %> </span>
   </div>
 </section>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

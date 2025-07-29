@@ -1,25 +1,34 @@
-<table>
+<table class="branches-table"
+  style="width:100%; border-collapse:separate; border-spacing:0; background:#D6EFD8; border-radius: 18px; overflow: hidden; box-shadow:0 1px 6px rgba(80,141,78,0.03); font-size:1rem;">
   <thead>
-    <tr>
-      <th>Name</th>
-      <th>Code</th>
-      <th>Actions</th>
+    <tr style="background: #80AF81; color: #fff; font-size: 1.07rem;">
+      <th style="padding:.9rem 1rem; text-align:left;">Name</th>
+      <th style="padding:.9rem 1rem; text-align:left;">Code</th>
+      <th style="padding:.9rem 1rem; text-align:center;">Actions</th>
     </tr>
   </thead>
   <tbody>
-    <% branches.forEach(function(branch) { %>
-      <tr>
-        <form action="/admin/branches/edit/<%= branch.id %>" method="POST">
-          <td><input type="text" name="name" value="<%= branch.name %>" required></td>
-          <td><input type="text" name="code" value="<%= branch.code %>" required></td>
-          <td>
-            <button type="submit">Save</button>
-          </form>
+    <% if (branches && branches.length > 0) { %>
+      <% branches.forEach(branch => { %>
+        <tr style="background:#fff;">
+          <td style="padding:.75rem 1rem;"><%= branch.name %></td>
+          <td style="padding:.75rem 1rem;"><%= branch.code %></td>
+          <td style="padding:.55rem 1rem; text-align:center;">
+            <form action="/admin/branches/edit/<%= branch.id %>" method="POST" style="display:inline;">
+              <input type="text" name="name" value="<%= branch.name %>" style="padding:.3rem .7rem; border-radius:6px; border:1px solid #AC8968; margin-right:.3rem; width:140px;">
+              <input type="text" name="code" value="<%= branch.code %>" style="padding:.3rem .7rem; border-radius:6px; border:1px solid #AC8968; margin-right:.3rem; width:110px;">
+              <button type="submit" style="background: #508D4E; color: #fff; border: none; border-radius: 7px; padding: .4rem 1.1rem; font-weight: 700; font-size: 1em; cursor:pointer; margin-right:.3rem;">Save</button>
+            </form>
             <form action="/admin/branches/delete/<%= branch.id %>" method="POST" style="display:inline;">
-              <button type="submit" onclick="return confirm('Delete this branch?');">Delete</button>
+              <button type="submit" onclick="return confirm('Delete this branch?');" style="background: #AC8968; color: #fff; border: none; border-radius: 7px; padding: .4rem 1.1rem; font-weight: 700; font-size: 1em; cursor:pointer;">Delete</button>
             </form>
           </td>
+        </tr>
+      <% }) %>
+    <% } else { %>
+      <tr>
+        <td colspan="3" style="text-align:center; padding:2rem; color: #93785B;">No branches found.</td>
       </tr>
-    <% }) %>
+    <% } %>
   </tbody>
 </table>
