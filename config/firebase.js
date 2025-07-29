@@ -2,31 +2,26 @@
 'use strict';
 
 const admin = require('firebase-admin');
+const path = require('path');
+const fs = require('fs');
 
-const {
-  FIREBASE_PROJECT_ID,
-  FIREBASE_CLIENT_EMAIL,
-  FIREBASE_PRIVATE_KEY,
-  FIREBASE_DATABASE_URL
-} = process.env;
+const serviceAccountPath = path.join(__dirname, 'serviceAccountKey.json');
 
-if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) {
-  throw new Error('Missing Firebase env vars.');
+if (!fs.existsSync(serviceAccountPath)) {
+  throw new Error('❌ Missing serviceAccountKey.json in /config');
 }
 
-// Decode newlines (\\n → \n)
-const privateKey = FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
+const serviceAccount = require(serviceAccountPath);
 
-console.log('✅ [firebase.js] Loaded Firebase via ENV');
-console.log('🔐 ENV private key first 50:', privateKey.substring(0, 50));
-
-admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: FIREBASE_PROJECT_ID,
-    clientEmail: FIREBASE_CLIENT_EMAIL,
-    privateKey: privateKey,
-  }),
-  databaseURL: FIREBASE_DATABASE_URL || undefined,
-});
+try {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: process.env.FIREBASE_DATABASE_URL || undefined
+  });
+  console.log('✅ Firebase initialized via serviceAccountKey.json');
+} catch (err) {
+  console.error('🔥 Firebase init failed:', err.message);
+  throw err;
+}
 
 module.exports = admin;
