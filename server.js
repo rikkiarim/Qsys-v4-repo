@@ -6,13 +6,11 @@ const express = require('express');
 const engine = require('ejs-mate');
 require('dotenv').config();
 const session = require('express-session');
-const FileStore = require('session-file-store')(session);  // <-- Add this line
-const logger = require('./utils/logger');
+const FileStore = require('session-file-store')(session);  // Persistent session storage
 
 const app = express();
 
-
-logger.debug('Starting QSys server...');
+console.log('Starting QSys server...');
 
 // ─── Trust Proxy (REQUIRED for cPanel/Render/hosted envs) ───────
 app.set('trust proxy', 1);
@@ -24,16 +22,16 @@ app.get('/_time', (req, res) => {
 
 // ─── Express session middleware with FileStore ─────────────────
 app.use(session({
-  store: new FileStore({ path: './sessions', logFn: function(){} }), // <-- Persistent session storage
+  store: new FileStore({ path: './sessions', logFn: function(){} }),
   key: 'qsys_session',
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,                // Set to true ONLY for HTTPS production
-    httpOnly: true,               // Helps mitigate XSS
-    maxAge: 1000 * 60 * 60 * 2,   // 2 hours session expiry
-    sameSite: 'lax'               // Good default
+    secure: false,
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 2,
+    sameSite: 'lax'
   }
 }));
 
@@ -60,7 +58,7 @@ app.use(express.json());
 
 // Request logging
 app.use((req, res, next) => {
-  logger.debug(`→ ${req.method} ${req.originalUrl}`);
+  console.log(`→ ${req.method} ${req.originalUrl}`);
   next();
 });
 
@@ -84,7 +82,7 @@ app.use('/reception', receptionRoutes);
 
 // Centralized error handler
 app.use((err, req, res, next) => {
-  logger.error(err.stack || err);
+  console.error(err.stack || err);
   res.status(500).render('error', {
     title: 'Server Error',
     message: 'Something went wrong—our team has been notified.'
@@ -93,10 +91,10 @@ app.use((err, req, res, next) => {
 
 // Handle unhandled rejections & exceptions
 process.on('unhandledRejection', reason => {
-  logger.error(`Unhandled Rejection: ${reason}`);
+  console.error(`Unhandled Rejection: ${reason}`);
 });
 process.on('uncaughtException', err => {
-  logger.error(`Uncaught Exception: ${err.stack || err}`);
+  console.error(`Uncaught Exception: ${err.stack || err}`);
   process.exit(1);
 });
 
@@ -104,5 +102,5 @@ process.on('uncaughtException', err => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`QSys running at http://localhost:${PORT}`);
-  logger.debug(`Listening on port ${PORT}`);
+  console.log(`Listening on port ${PORT}`);
 });
