@@ -1,15 +1,19 @@
-const express               = require('express');
-const fetch                 = require('node-fetch');
-const admin                 = require('../config/firebase'); // ✅ fixed
-const router                = express.Router();
-const fs                    = require('fs');
-const path                  = require('path');
-const getManilaDateKey      = require('../utils/getManilaDateKey');
-const getNextQueueNumber    = require('../utils/getNextQueueNumber');
-const FIREBASE_API_KEY      = process.env.FIREBASE_API_KEY;
+// routes/general.js
+
+const express = require('express');
+const admin = require('../config/firebase'); // Firebase Admin SDK
+const router = express.Router();
+
+// Node 18+ has built-in fetch; comment out node-fetch import to avoid missing module errors
+// const fetch = require('node-fetch');
+
+const fs = require('fs');
+const path = require('path');
+const getManilaDateKey = require('../utils/getManilaDateKey');
+const getNextQueueNumber = require('../utils/getNextQueueNumber');
+const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
 
 // --- AUTH FLOW ---
-
 router.get('/login', (req, res) => {
   console.log('>>> [LOGIN GET] Route hit');
   if (req.session && req.session.user) {
@@ -38,7 +42,7 @@ router.post('/login', async (req, res) => {
     body:             req.body
   }) + '\n';
 
-  fs.appendFileSync(path.join(__dirname, '../login-debug.log'), debugEntry);
+  fs.appendFileSync(path.join(__dirname, './login-debug.log'), debugEntry);
   console.log('>>> [LOGIN POST] Data:', req.body);
 
   try {
@@ -74,7 +78,7 @@ router.post('/login', async (req, res) => {
       .get();
 
     const userData       = userDoc.exists ? userDoc.data() : {};
-    const assignedBranch = userData.assignedbranch || '';
+    const assignedBranch = userData.assignedBranch || '';
 
     req.session.user = {
       uid:            decodedToken.uid,
@@ -108,4 +112,6 @@ router.post('/logout', async (req, res, next) => {
   }
 });
 
-// Guest registration and other routes remain unchanged...
+// ... other guest registration and routes unchanged ...
+
+module.exports = router;
