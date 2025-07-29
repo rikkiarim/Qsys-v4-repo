@@ -3,11 +3,10 @@
 const fs = require('fs');
 const path = require('path');
 const admin = require('firebase-admin');
-const firebase = require('../../config/firebase');
 
 // ─── DEBUG: Server Time & Raw Key Inspection ───────────────────────
 console.log('Server time:', new Date().toISOString());
-console.log('Loaded PRIVATE_KEY starts with:', process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.slice(0,30) : 'undefined');
+console.log('Loaded PRIVATE_KEY starts with:', process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.slice(0, 30) : 'undefined');
 console.log('Contains literal "\\n"?', process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.includes('\\n') : false);
 console.log('PRIVATE_KEY ends with:', process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.slice(-30) : 'undefined');
 
@@ -18,8 +17,8 @@ if (process.env.FIREBASE_PRIVATE_KEY_B64) {
 } else if (process.env.FIREBASE_PRIVATE_KEY) {
   rawKey = process.env.FIREBASE_PRIVATE_KEY
     .replace(/\\r/g, '')          // strip CR
-    .replace(/\\n/g, '\n')       // unescape newlines
-    .trim();                        // trim whitespace
+    .replace(/\\n/g, '\n')        // unescape newlines
+    .trim();                      // trim whitespace
 } else {
   console.error('❌ ERROR: No Firebase private key environment variable found.');
   process.exit(1);
