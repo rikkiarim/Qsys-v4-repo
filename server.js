@@ -6,6 +6,7 @@ const express = require('express');
 const engine = require('ejs-mate');
 require('dotenv').config();
 const session = require('express-session');
+const FileStore = require('session-file-store')(session);  // <-- Add this line
 const logger = require('./utils/logger');
 
 const app = express();
@@ -27,8 +28,9 @@ app.get('/_time', (req, res) => {
   res.json({ serverTime: new Date().toISOString() });
 });
 
-// ─── Express session middleware ────────────────────────────────
+// ─── Express session middleware with FileStore ─────────────────
 app.use(session({
+  store: new FileStore({ path: './sessions', logFn: function(){} }), // <-- Persistent session storage
   key: 'qsys_session',
   secret: process.env.SESSION_SECRET,
   resave: false,
