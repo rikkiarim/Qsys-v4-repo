@@ -4,13 +4,17 @@ const fs = require('fs');
 const path = require('path');
 const admin = require('firebase-admin');
 
-// Load service account JSON directly
-const serviceAccount = require(path.join(__dirname, 'serviceAccountKey.json'));
+// Build credentials from environment variables
+const serviceAccount = {
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+};
 
 // ─── DEBUG: Confirm serviceAccount load ─────────────────────────
 try {
   fs.appendFileSync(
-    path.join(__dirname, '../debug.log'),
+    path.join(__dirname, './debug.log'),
     `Loaded serviceAccount with keys: ${Object.keys(serviceAccount).join(', ')} at ${new Date().toISOString()}\n`
   );
 } catch (e) {
@@ -24,18 +28,18 @@ try {
   // ─── DEBUG: Firebase initialized ─────────────────────────────
   try {
     fs.appendFileSync(
-      path.join(__dirname, '../debug.log'),
-      `Firebase Admin initialized using serviceAccountKey.json at ${new Date().toISOString()}\n`
+      path.join(__dirname, './debug.log'),
+      `Firebase Admin initialized using environment variables at ${new Date().toISOString()}\n`
     );
   } catch (e) {
     console.error('DEBUG LOG WRITE FAILED:', e);
   }
-  console.log('✅ Firebase Admin initialized using serviceAccountKey.json');
+  console.log('✅ Firebase Admin initialized using environment variables');
 } catch (err) {
   console.error('❌ Firebase Admin init error:', err);
   try {
     fs.appendFileSync(
-      path.join(__dirname, '../debug.log'),
+      path.join(__dirname, './debug.log'),
       `Firebase init error: ${err.message}\n`,
     );
   } catch (e) {
