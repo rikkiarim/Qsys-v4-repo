@@ -360,3 +360,219 @@ body.hide-sidebar .main-content {
   border-radius: 7px;
   font-weight: 600;
 }
+
+
+/* --- QSys Admin Button and Utility Styles --- */
+.btn {
+  font-family: 'Montserrat', 'Raleway', sans-serif;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.18s;
+  display: inline-block;
+  margin-right: 5px;
+}
+.btn-green {
+  background: #508D4E;
+  color: #fff;
+}
+.btn-green:hover, .btn-green:focus { background: #1A5319; }
+.btn-red {
+  background: #c2432c;
+  color: #fff;
+}
+.btn-red:hover, .btn-red:focus { background: #99251a; }
+.btn-small { padding: 0.35rem 0.95rem; font-size: 0.97rem; }
+
+.card {
+  border-radius: 1.4rem;
+  box-shadow: 0 2px 16px 0 rgba(24,48,24,0.07);
+  padding: 2rem 1.6rem 1.6rem 1.6rem;
+  margin-bottom: 2rem;
+  background: #F6FBF5;
+}
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #508D4E;
+  margin-bottom: 1.4rem;
+  letter-spacing: 0.5px;
+}
+
+.toast {
+  padding: 0.7rem 1.2rem;
+  border-radius: 0.8rem;
+  margin-bottom: 1.3rem;
+  font-weight: 600;
+  font-size: 1.06rem;
+  box-shadow: 0 2px 8px rgba(30,41,30,0.06);
+}
+.toast-success { background: #D6EFD8; color: #1A5319; }
+.toast-error { background: #FFD2D2; color: #8B2727; }
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.7rem;
+  background: #F6FBF5;
+}
+.data-table th, .data-table td {
+  padding: 0.85rem 0.8rem;
+  text-align: left;
+  font-size: 1rem;
+  border-bottom: 1px solid #D6EFD8;
+}
+.data-table th {
+  background: #D6EFD8;
+  color: #1A5319;
+  font-weight: 700;
+}
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+@media (max-width: 1024px) {
+  .flex-container { flex-direction: column; }
+  .card { width: 100%; min-width: unset; }
+}
+@media (max-width: 600px) {
+  .admin-content { padding: 1.3rem 0.3rem; }
+  .card { padding: 1.2rem 0.7rem; }
+  .page-title { font-size: 1.33rem; }
+}
+
+.modal { display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(30,41,30,0.15); }
+.modal-content { background:#fff; border-radius:1.2rem; max-width:400px; margin:7% auto; padding:2rem 1.5rem; position:relative; box-shadow:0 4px 30px 0 rgba(60,80,60,0.13);}
+.close { position:absolute; top:1.2rem; right:1.3rem; font-size:2rem; color:#93785B; cursor:pointer; }
+
+.admin-content,
+.user-admin-page {
+  max-width: 1100px;
+  padding: 2.5rem 0 0 3.5rem;  /* More left pad, less right */
+}
+.user-cards-row {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+.user-form-card {
+  min-width: 340px;
+  max-width: 390px;
+  background: #D6EFD8;
+  border-radius: 1.3rem;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  box-shadow: 0 2px 16px 0 rgba(24,48,24,0.07);
+  margin-bottom: 2.2rem;
+}
+.user-form-card .form-group label {
+  color: #508D4E;
+  font-weight: 600;
+  margin-bottom: 0.23rem;
+}
+.user-form-card .form-group input,
+.user-form-card .form-group select {
+  border: 1.5px solid #B0C5B6;
+  font-size: 1.05rem;
+  border-radius: 0.7rem;
+  background: #fff;
+  color: #222;
+  margin-bottom: 0.15rem;
+  padding: 0.8rem;
+}
+.user-form-card button[type="submit"] {
+  margin-top: 1.3rem;
+  font-size: 1.1rem;
+  font-family: 'Montserrat', 'Raleway', sans-serif;
+  border-radius: 0.7rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  background: #508D4E;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(80,175,129,0.10);
+  transition: background 0.16s;
+}
+.user-form-card button[type="submit"]:hover { background: #1A5319; }
+.user-table-card {
+  background: #fff;
+  border-radius: 1.3rem;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  box-shadow: 0 2px 16px 0 rgba(24,48,24,0.07);
+  margin-bottom: 2.2rem;
+}
+.data-table th {
+  background: #80AF81;
+  color: #fff;
+  font-size: 1.07rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+.data-table td, .data-table th {
+  border: none;
+}
+.data-table tr {
+  border-bottom: 1px solid #D6EFD8;
+}
+.user-mgmt-title {
+  font-family: 'Raleway', 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 2.35rem;
+  margin-bottom: 1.7rem;
+  margin-top: 2.2rem;
+  letter-spacing: 1px;
+  color: #214e27;
+}
+
+.user-admin-page {
+  padding-left: 3.5rem;
+  padding-top: 2.2rem;
+}
+.user-form-card {
+  min-width: 340px;
+  max-width: 420px;
+  background: #D6EFD8;
+  border-radius: 1.2rem;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  box-shadow: 0 3px 22px 0 rgba(24,48,24,0.09);
+  margin-bottom: 2.2rem;
+}
+.form-column .form-group {
+  margin-bottom: 1.13rem;
+}
+.form-column label {
+  font-size: 1.04rem;
+  font-weight: 700;
+  color: #508D4E;
+  margin-bottom: 0.27rem;
+  display: block;
+}
+.form-column input, .form-column select {
+  width: 100%;
+  padding: 0.82rem 0.8rem;
+  border-radius: 0.7rem;
+  border: 1.5px solid #B0C5B6;
+  background: #fff;
+  font-size: 1.08rem;
+  margin-top: 0.08rem;
+  box-sizing: border-box;
+}
+.form-submit-btn {
+  margin-top: 1.3rem;
+  font-size: 1.1rem;
+  font-family: 'Montserrat', 'Raleway', sans-serif;
+  border-radius: 0.7rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  background: #508D4E;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(80,175,129,0.10);
+  transition: background 0.16s;
+}
+.form-submit-btn:hover, .btn-green:hover, .btn-green:focus { background: #1A5319; }

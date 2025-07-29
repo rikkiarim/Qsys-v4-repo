@@ -1,6 +1,6 @@
 <% layout('layouts/main') %>
 <section class="admin-content user-admin-page">
-  <h1 class="page-title" style="margin-bottom: 2.2rem;">User Management</h1>
+  <h1 class="page-title user-mgmt-title">User Management</h1>
   <% if (typeof success !== "undefined" && success) { %>
     <div class="toast toast-success"><%= success %></div>
   <% } %>
@@ -11,7 +11,7 @@
     <!-- Add/Edit User Form -->
     <div class="card user-form-card">
       <h2 class="card-title" id="formTitle">Add New User</h2>
-      <form id="userForm" method="POST" action="/admin/users/add" class="form-column" autocomplete="off">
+      <form id="userForm" method="POST" action="/admin/users/add" class="form-column" autocomplete="off" style="max-width:390px;">
         <input type="hidden" id="form_uid" name="uid" />
         <div class="form-group">
           <label for="name">Full Name</label>
@@ -27,7 +27,7 @@
         </div>
         <div class="form-group">
           <label for="role">Role</label>
-          <select id="role" name="role" required>
+          <select id="role" name="role" required onchange="toggleBranchRequired()">
             <option value="" disabled selected>Select Role</option>
             <option value="admin">Admin</option>
             <option value="staff">Staff</option>
@@ -35,14 +35,14 @@
         </div>
         <div class="form-group">
           <label for="branch">Branch</label>
-          <select id="branch" name="branch" required>
-            <option value="" disabled selected>Select Branch</option>
+          <select id="branch" name="branch">
+            <option value="" selected>(None)</option>
             <% branches.forEach(branch => { %>
               <option value="<%= branch.code %>"><%= branch.name %></option>
             <% }) %>
           </select>
         </div>
-        <button type="submit" id="formSubmitBtn" class="btn btn-green" style="margin-top:1.5rem;width:100%;">Add User</button>
+        <button type="submit" id="formSubmitBtn" class="btn btn-green form-submit-btn">Add User</button>
         <button type="button" id="formCancelBtn" class="btn btn-small" style="margin-top:1.1rem;width:100%;display:none;">Cancel Edit</button>
       </form>
     </div>
@@ -73,7 +73,7 @@
                   <td style="text-transform:capitalize;"><%= user.role %></td>
                   <td>
                     <% let branch = branches.find(b => b.code === user.branch); %>
-                    <%= branch ? branch.name : user.branch %>
+                    <%= branch ? branch.name : (user.branch || "") %>
                   </td>
                   <td>
                     <button type="button" class="btn btn-green btn-small" onclick="editUserInline('<%= user.uid %>')">Edit</button>
@@ -93,12 +93,25 @@
 <script>
 window.allUsers = <%- JSON.stringify(users) %>;
 
+function toggleBranchRequired() {
+  const role = document.getElementById('role').value;
+  const branchSelect = document.getElementById('branch');
+  if (role === 'admin') {
+    branchSelect.value = "";
+    branchSelect.required = false;
+    branchSelect.disabled = true;
+  } else {
+    branchSelect.required = true;
+    branchSelect.disabled = false;
+  }
+}
+
 function resetUserForm() {
   document.getElementById('userForm').action = '/admin/users/add';
   document.getElementById('form_uid').value = '';
   document.getElementById('formTitle').textContent = "Add New User";
   document.getElementById('formSubmitBtn').textContent = 'Add User';
-  document.getElementById('formSubmitBtn').className = 'btn btn-green';
+  document.getElementById('formSubmitBtn').className = 'btn btn-green form-submit-btn';
   document.getElementById('formCancelBtn').style.display = 'none';
   document.getElementById('name').value = '';
   document.getElementById('email').value = '';
@@ -108,6 +121,7 @@ function resetUserForm() {
   document.getElementById('password').disabled = false;
   document.getElementById('role').value = '';
   document.getElementById('branch').value = '';
+  toggleBranchRequired();
 }
 
 function editUserInline(uid) {
@@ -117,7 +131,7 @@ function editUserInline(uid) {
   document.getElementById('form_uid').value = user.uid;
   document.getElementById('formTitle').textContent = "Edit User";
   document.getElementById('formSubmitBtn').textContent = 'Save Changes';
-  document.getElementById('formSubmitBtn').className = 'btn btn-yellow';
+  document.getElementById('formSubmitBtn').className = 'btn btn-yellow form-submit-btn';
   document.getElementById('formCancelBtn').style.display = 'block';
   document.getElementById('name').value = user.name || '';
   document.getElementById('email').value = user.email || '';
@@ -127,6 +141,7 @@ function editUserInline(uid) {
   document.getElementById('password').disabled = true;
   document.getElementById('role').value = user.role || '';
   document.getElementById('branch').value = user.branch || '';
+  toggleBranchRequired();
 }
 
 document.getElementById('formCancelBtn').onclick = function() {
