@@ -3,7 +3,7 @@ console.log('general.js __dirname:', __dirname);
 
 const express = require('express');
 const router = express.Router();
-const logger = require('..logger/utils/logger');
+const logger = require('../utils/logger');
 
 // Import initialized Firebase Admin SDK from environment-based config
 const admin = require('./config/firebase');
