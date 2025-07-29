@@ -11,12 +11,6 @@ const logger = require('./utils/logger');
 
 const app = express();
 
-// Basic boot logging
-try {
-  //fs.appendFileSync(path.join(__dirname, 'debug.log'), `server.js loaded at ${new Date().toISOString()}\n`);
-} catch (err) {
-  console.error('DEBUG LOGGING FAILED:', err);
-}
 
 logger.debug('Starting QSys server...');
 
