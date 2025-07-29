@@ -1,7 +1,6 @@
 <% layout('layouts/main') %>
 <section>
   <h2>Branch Management</h2>
-  <pre>success: <%= JSON.stringify(success) %>, error: <%= JSON.stringify(error) %></pre>
 
   <% if (success) { %>
     <div class="alert alert-success"><%= success %></div>
@@ -10,35 +9,73 @@
     <div class="alert alert-error"><%= error %></div>
   <% } %>
 
-  <form action="/admin/branches/add" method="POST" style="margin-bottom:2rem;">
+  <form id="add-branch-form" action="/admin/branches/add" method="POST" style="margin-bottom:1.5rem;">
     <input type="text" name="name" placeholder="Branch Name" required>
     <input type="text" name="code" placeholder="Branch Code" required>
     <button type="submit">Add Branch</button>
   </form>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Code</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% branches.forEach(function(branch) { %>
-        <tr>
-          <form action="/admin/branches/edit/<%= branch.id %>" method="POST">
-            <td><input type="text" name="name" value="<%= branch.name %>" required></td>
-            <td><input type="text" name="code" value="<%= branch.code %>" required></td>
-            <td>
-              <button type="submit">Save</button>
-            </form>
-              <form action="/admin/branches/delete/<%= branch.id %>" method="POST" style="display:inline;">
-                <button type="submit" onclick="return confirm('Delete this branch?');">Delete</button>
-              </form>
-            </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
+  <div style="margin-bottom:1rem; display: flex; justify-content: space-between; align-items: center;">
+    <input id="branch-search" type="text" placeholder="Search by branch name..." value="<%= search || '' %>" autocomplete="off">
+    <span style="font-size: .9em; color: #888;"><%= branches.length %> result(s)</span>
+  </div>
+
+  <div id="branches-table-container">
+    <%- include('admin/branches-table', { branches }) %>
+  </div>
+
+  <div style="margin-top: 1rem;">
+    <button id="prev-page" <% if (!hasPrev) { %>disabled<% } %>>Prev</button>
+    <button id="next-page" <% if (!hasNext) { %>disabled<% } %>>Next</button>
+    <span style="font-size:.9em; color:#999;"> Page size: <%= pageSize %> </span>
+  </div>
 </section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+var firstId = "<%= firstId || '' %>";
+var lastId = "<%= lastId || '' %>";
+var currentSearch = "<%= search || '' %>";
+var pageSize = <%= pageSize || 10 %>;
+
+function fetchBranches(direction, cursorId, search) {
+  $.ajax({
+    url: "/admin/branches",
+    type: "GET",
+    data: {
+      pageSize,
+      search,
+      cursor: cursorId,
+      direction
+    },
+    dataType: "json",
+    success: function(data) {
+      $('#branches-table-container').html(data.html);
+      // Update page cursors
+      firstId = data.firstId;
+      lastId = data.lastId;
+      $('#prev-page').prop('disabled', !search && !firstId); // Only disable prev on first page
+      $('#next-page').prop('disabled', !data.hasNext);
+    }
+  });
+}
+
+$('#branch-search').on('input', function() {
+  var val = $(this).val();
+  currentSearch = val;
+  // debounce (wait 300ms after typing stops)
+  clearTimeout(window.branchSearchTimeout);
+  window.branchSearchTimeout = setTimeout(function() {
+    fetchBranches('next', '', val);
+  }, 300);
+});
+
+$('#prev-page').on('click', function(e) {
+  e.preventDefault();
+  fetchBranches('prev', firstId, currentSearch);
+});
+$('#next-page').on('click', function(e) {
+  e.preventDefault();
+  fetchBranches('next', lastId, currentSearch);
+});
+</script>

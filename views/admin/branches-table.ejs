@@ -1,0 +1,25 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Code</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% branches.forEach(function(branch) { %>
+      <tr>
+        <form action="/admin/branches/edit/<%= branch.id %>" method="POST">
+          <td><input type="text" name="name" value="<%= branch.name %>" required></td>
+          <td><input type="text" name="code" value="<%= branch.code %>" required></td>
+          <td>
+            <button type="submit">Save</button>
+          </form>
+            <form action="/admin/branches/delete/<%= branch.id %>" method="POST" style="display:inline;">
+              <button type="submit" onclick="return confirm('Delete this branch?');">Delete</button>
+            </form>
+          </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
