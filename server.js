@@ -19,19 +19,25 @@ try {
 
 logger.debug('Starting QSys server...');
 
+// ─── Trust Proxy (REQUIRED for cPanel/Render/hosted envs) ───────
+app.set('trust proxy', 1);
+
 // Time sync check endpoint
 app.get('/_time', (req, res) => {
   res.json({ serverTime: new Date().toISOString() });
 });
 
-// Express session
+// ─── Express session middleware ────────────────────────────────
 app.use(session({
   key: 'qsys_session',
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    // session cookie settings
+    secure: false,                // Set to true ONLY for HTTPS production
+    httpOnly: true,               // Helps mitigate XSS
+    maxAge: 1000 * 60 * 60 * 2,   // 2 hours session expiry
+    sameSite: 'lax'               // Good default
   }
 }));
 
