@@ -320,3 +320,43 @@ body.hide-sidebar .main-content {
   padding: 0 !important;
   width: 100vw;
 }
+.alert-success { color: #155724; background: #d4edda; padding: 0.5rem 1rem; margin-bottom: 1rem; border-radius: 4px; }
+.alert-error { color: #721c24; background: #f8d7da; padding: 0.5rem 1rem; margin-bottom: 1rem; border-radius: 4px; }
+
+
+/* Branch Management Table Improvements */
+.branches-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #80AF81 !important;
+}
+
+.branches-table tbody tr:nth-child(even) {
+  background: #eaf7ea;
+}
+
+.branches-table tbody tr:hover {
+  background: #D6EFD8;
+}
+
+/* Feedback alert */
+.alert-success {
+  background: #D6EFD8;
+  color: #1A5319;
+  border-left: 5px solid #80AF81;
+  padding: 0.8rem 1.3rem;
+  margin-bottom: 1rem;
+  border-radius: 7px;
+  font-weight: 600;
+}
+
+.alert-error {
+  background: #FFD6D6;
+  color: #AC1200;
+  border-left: 5px solid #AC8968;
+  padding: 0.8rem 1.3rem;
+  margin-bottom: 1rem;
+  border-radius: 7px;
+  font-weight: 600;
+}

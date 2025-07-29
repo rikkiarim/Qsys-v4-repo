@@ -1,6 +1,13 @@
 <% layout('layouts/main') %>
 <section style="max-width: 1020px; margin: 2rem 0 0 3.3rem; font-family: 'Raleway', 'Montserrat', sans-serif;">
   <h2 style="color: #1A5319; font-size: 2rem; margin-bottom: 1.2rem; font-weight: 800;">Branch Management</h2>
+  
+  <!-- Overview Card -->
+  <div style="margin-bottom: 1.2rem; display: flex; gap: 1.6rem;">
+    <div style="background: #80AF81; color: #fff; border-radius: 12px; padding: 1rem 2.2rem; font-size: 1.22rem; font-weight: 700; box-shadow: 0 1px 6px rgba(80,141,78,0.10);">
+      Total Branches: <span style="font-size:1.45rem; margin-left:.5rem;"><%= branches.length %></span>
+    </div>
+  </div>
 
   <% if (success) { %>
     <div class="alert alert-success"><%= success %></div>
@@ -37,7 +44,6 @@
     <span style="font-size:.97em; color:#999; margin-left:1.4rem;"> Page size: <%= pageSize %> </span>
   </div>
 </section>
-
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
