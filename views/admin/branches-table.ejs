@@ -11,18 +11,25 @@
     <% if (branches && branches.length > 0) { %>
       <% branches.forEach(branch => { %>
         <tr style="background:#fff;">
-          <td style="padding:.75rem 1rem;"><%= branch.name %></td>
-          <td style="padding:.75rem 1rem;"><%= branch.code %></td>
-          <td style="padding:.55rem 1rem; text-align:center;">
-            <form action="/admin/branches/edit/<%= branch.id %>" method="POST" style="display:inline;">
-              <input type="text" name="name" value="<%= branch.name %>" style="padding:.3rem .7rem; border-radius:6px; border:1px solid #AC8968; margin-right:.3rem; width:140px;">
-              <input type="text" name="code" value="<%= branch.code %>" style="padding:.3rem .7rem; border-radius:6px; border:1px solid #AC8968; margin-right:.3rem; width:110px;">
-              <button type="submit" style="background: #508D4E; color: #fff; border: none; border-radius: 7px; padding: .4rem 1.1rem; font-weight: 700; font-size: 1em; cursor:pointer; margin-right:.3rem;">Save</button>
-            </form>
-            <form action="/admin/branches/delete/<%= branch.id %>" method="POST" style="display:inline;">
-              <button type="submit" onclick="return confirm('Delete this branch?');" style="background: #AC8968; color: #fff; border: none; border-radius: 7px; padding: .4rem 1.1rem; font-weight: 700; font-size: 1em; cursor:pointer;">Delete</button>
-            </form>
-          </td>
+          <form action="/admin/branches/edit/<%= branch.id %>" method="POST" style="display:contents;">
+            <td style="padding:.45rem 1rem;">
+              <input type="text" name="name" value="<%= branch.name %>"
+                style="width: 170px; padding: 0.32rem 0.7rem; border-radius: 7px; border:1px solid #AC8968; font-size:.98em;">
+            </td>
+            <td style="padding:.45rem 1rem;">
+              <input type="text" name="code" value="<%= branch.code %>"
+                style="width: 120px; padding: 0.32rem 0.7rem; border-radius: 7px; border:1px solid #AC8968; font-size:.98em;">
+            </td>
+            <td style="padding:.45rem 1rem; text-align:center;">
+              <button type="submit"
+                style="background: #508D4E; color: #fff; border: none; border-radius: 7px; padding: .32rem 1.1rem; font-weight: 700; font-size: .99em; cursor:pointer; margin-right:7px; vertical-align:middle;">Save</button>
+          </form>
+              <form action="/admin/branches/delete/<%= branch.id %>" method="POST" style="display:inline;">
+                <button type="submit"
+                  onclick="return confirm('Delete this branch?');"
+                  style="background: #AC8968; color: #fff; border: none; border-radius: 7px; padding: .32rem 1.1rem; font-weight: 700; font-size: .99em; cursor:pointer; vertical-align:middle;">Delete</button>
+              </form>
+            </td>
         </tr>
       <% }) %>
     <% } else { %>
