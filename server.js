@@ -1,5 +1,9 @@
 // server.js
 
+// ─── Boot Marker ───────────────────────────────────────────────
+const fs = require('fs');
+fs.appendFileSync(__dirname + '/debug.log', `server.js loaded at ${new Date().toISOString()}\n`);
+
 const express = require('express');
 const path = require('path');
 const engine = require('ejs-mate');
@@ -21,12 +25,12 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    …
+    // your cookie settings
   }
 }));
 
 // ─── Setup EJS with ejs-mate ────────────────────────────────────
-app.engine('ejs', engine);                // CRITICAL: Register ejs-mate as engine!
+app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -51,7 +55,6 @@ app.get('/', (req, res) => {
     } else if (req.session.user.role === 'staff') {
       return res.redirect('/reception');
     }
-    // Add more roles as needed
   }
   res.redirect('/login');
 });
