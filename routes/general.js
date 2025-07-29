@@ -9,8 +9,8 @@ const logger = require('../utils/logger');
 // Import initialized Firebase Admin SDK from environment-based config
 const admin = require('../config/firebase');
 
-const getManilaDateKey = require('./utils/getManilaDateKey');
-const getNextQueueNumber = require('./utils/getNextQueueNumber');
+const getManilaDateKey = require('../utils/getManilaDateKey');
+const getNextQueueNumber = require('../utils/getNextQueueNumber');
 const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
 
 // --- AUTH FLOW ---
