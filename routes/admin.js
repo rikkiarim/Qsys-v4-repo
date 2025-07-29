@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { isAuthenticated, isAdmin } = require('../middleware/auth');
-const admin = require('../config/firebase'); // Adjust path as needed
+const admin = require('../config/firebase');
 
 // ADMIN DASHBOARD
 router.get('/', isAuthenticated, isAdmin, (req, res) => {
@@ -28,7 +28,8 @@ router.get('/branches', isAuthenticated, isAdmin, async (req, res) => {
       layout: 'layouts/main'
     });
   } catch (err) {
-    res.render('error', { title: 'Error', message: 'Failed to load branches.' });
+    req.session.error = 'Failed to load branches.';
+    res.redirect('/admin/branches');
   }
 });
 
@@ -37,9 +38,11 @@ router.post('/branches/add', isAuthenticated, isAdmin, async (req, res) => {
   try {
     const { name, code } = req.body;
     await admin.firestore().collection('branches').add({ name, code });
+    req.session.success = 'Branch added successfully!';
     res.redirect('/admin/branches');
   } catch (err) {
-    res.render('error', { title: 'Error', message: 'Failed to add branch.' });
+    req.session.error = 'Failed to add branch.';
+    res.redirect('/admin/branches');
   }
 });
 
@@ -49,9 +52,11 @@ router.post('/branches/edit/:id', isAuthenticated, isAdmin, async (req, res) => 
     const { name, code } = req.body;
     const { id } = req.params;
     await admin.firestore().collection('branches').doc(id).update({ name, code });
+    req.session.success = 'Branch updated successfully!';
     res.redirect('/admin/branches');
   } catch (err) {
-    res.render('error', { title: 'Error', message: 'Failed to edit branch.' });
+    req.session.error = 'Failed to update branch.';
+    res.redirect('/admin/branches');
   }
 });
 
@@ -60,9 +65,11 @@ router.post('/branches/delete/:id', isAuthenticated, isAdmin, async (req, res) =
   try {
     const { id } = req.params;
     await admin.firestore().collection('branches').doc(id).delete();
+    req.session.success = 'Branch deleted.';
     res.redirect('/admin/branches');
   } catch (err) {
-    res.render('error', { title: 'Error', message: 'Failed to delete branch.' });
+    req.session.error = 'Failed to delete branch.';
+    res.redirect('/admin/branches');
   }
 });
 

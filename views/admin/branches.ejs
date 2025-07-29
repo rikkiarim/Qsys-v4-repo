@@ -1,6 +1,14 @@
 <% layout('layouts/main') %>
 <section>
   <h2>Branch Management</h2>
+  <pre>success: <%= JSON.stringify(success) %>, error: <%= JSON.stringify(error) %></pre>
+
+  <% if (success) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+  <% if (error) { %>
+    <div class="alert alert-error"><%= error %></div>
+  <% } %>
 
   <form action="/admin/branches/add" method="POST" style="margin-bottom:2rem;">
     <input type="text" name="name" placeholder="Branch Name" required>
