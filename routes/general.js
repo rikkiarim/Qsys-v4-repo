@@ -5,7 +5,6 @@ const express = require('express');
 const router = express.Router();
 const logger = require('../utils/logger');
 
-
 // Import initialized Firebase Admin SDK from environment-based config
 const admin = require('../config/firebase');
 
@@ -52,12 +51,14 @@ router.post('/login', async (req, res) => {
 
     const decodedToken = await admin.auth().verifyIdToken(data.idToken);
     const userRecord = await admin.auth().getUser(decodedToken.uid);
-    const role = (decodedToken.role || 'staff').toLowerCase();
+
+    // --- PATCH: Role fetched from Firestore user doc ---
     const userDoc = await admin.firestore()
       .collection('users')
       .doc(decodedToken.uid)
       .get();
     const userData = userDoc.exists ? userDoc.data() : {};
+    const role = (userData.role || 'staff').toLowerCase();
     const assignedBranch = userData.assignedBranch || '';
 
     req.session.user = {
