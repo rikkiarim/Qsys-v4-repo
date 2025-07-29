@@ -1,0 +1,23 @@
+# render.yaml
+services:
+  - type: web
+    name: qsys-web
+    env: node
+    plan: hobby              # free tier
+    region: oregon           # same region you chose in the UI
+    branch: main             # the branch you deploy from
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: FIREBASE_PROJECT_ID
+        fromSecret: FIREBASE_PROJECT_ID
+      - key: FIREBASE_CLIENT_EMAIL
+        fromSecret: FIREBASE_CLIENT_EMAIL
+      - key: FIREBASE_PRIVATE_KEY
+        fromSecret: FIREBASE_PRIVATE_KEY
+      - key: SESSION_SECRET
+        fromSecret: SESSION_SECRET
+      - key: BASE_URL
+        value: https://qsys-web.onrender.com
+      - key: FIREBASE_API_KEY
+        value: AIzaSyAmiP_m0d7FDDctbQfAsl3yOAiOO6VqTGE
