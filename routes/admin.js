@@ -15,53 +15,60 @@ router.get('/', isAuthenticated, isAdmin, (req, res) => {
 
 // BRANCH MANAGEMENT
 
-// List all branches with pagination & search
+// List all branches with pagination & case-insensitive substring search
 router.get('/branches', isAuthenticated, isAdmin, async (req, res) => {
   try {
     const pageSize = parseInt(req.query.pageSize) || 10;
-    const search = (req.query.search || '').trim();
-    const cursor = req.query.cursor || null; // Last visible doc's ID
+    let search = (req.query.search || '').trim().toLowerCase();
+    const cursor = req.query.cursor || null;
     const direction = req.query.direction || 'next';
 
-    let query = admin.firestore().collection('branches');
-    if (search) {
-      // Prefix search (case sensitive; for more robust, use lower-cased field)
-      query = query
-        .orderBy('name')
-        .where('name', '>=', search)
-        .where('name', '<=', search + '\uf8ff');
-    } else {
-      query = query.orderBy('name');
-    }
+    // Fetch all branches ordered by name
+    let query = admin.firestore().collection('branches').orderBy('name');
+    let snap = await query.get();
+    let allBranches = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    // Handle pagination cursor
+    // Case-insensitive substring filter
+    let filteredBranches = search
+      ? allBranches.filter(branch =>
+          branch.name && branch.name.toLowerCase().includes(search)
+        )
+      : allBranches;
+
+    // In-memory pagination
+    let startIndex = 0;
+    let hasPrev = false;
+    let hasNext = false;
+
+    // If paginating, find index for cursor
     if (cursor) {
-      const snapshot = await admin.firestore().collection('branches').doc(cursor).get();
-      if (snapshot.exists) {
-        query = direction === 'next'
-          ? query.startAfter(snapshot)
-          : query.endBefore(snapshot);
-      }
+      const idx = filteredBranches.findIndex(b => b.id === cursor);
+      if (direction === 'next') startIndex = idx + 1;
+      else startIndex = Math.max(0, idx - pageSize);
+      hasPrev = startIndex > 0;
     }
 
-    // Get docs (fetch pageSize+1 to check for next page)
-    const snap = await query.limit(pageSize + 1).get();
-    let branches = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    let hasNext = branches.length > pageSize;
-    if (hasNext) branches = branches.slice(0, pageSize);
+    const branches = filteredBranches.slice(startIndex, startIndex + pageSize);
+    hasNext = (startIndex + pageSize) < filteredBranches.length;
 
     const firstDoc = branches[0] || null;
     const lastDoc = branches[branches.length - 1] || null;
 
-    // AJAX request? Render partial.
+    // AJAX (partial table render)
     if (req.xhr) {
       return res.render('admin/branches-table.ejs', { branches }, (err, html) => {
         if (err) return res.status(500).send('Render error');
-        res.send({ html, hasNext, firstId: firstDoc ? firstDoc.id : '', lastId: lastDoc ? lastDoc.id : '' });
+        res.send({
+          html,
+          hasNext,
+          hasPrev,
+          firstId: firstDoc ? firstDoc.id : '',
+          lastId: lastDoc ? lastDoc.id : ''
+        });
       });
     }
 
-    // Normal page load: render full page
+    // Full page render
     res.render('admin/branches', {
       user: req.session.user,
       title: 'Branch Management',
@@ -69,7 +76,7 @@ router.get('/branches', isAuthenticated, isAdmin, async (req, res) => {
       pageSize,
       search,
       hasNext,
-      hasPrev: !!cursor,
+      hasPrev,
       firstId: firstDoc ? firstDoc.id : '',
       lastId: lastDoc ? lastDoc.id : '',
       hideSidebar: false,
