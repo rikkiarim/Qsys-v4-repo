@@ -1,11 +1,15 @@
 // server.js
 
-// ─── Boot Marker ───────────────────────────────────────────────
+// ─── Boot Marker (with safe fallback) ───────────────────────────
 const fs = require('fs');
-fs.appendFileSync(__dirname + '/debug.log', `server.js loaded at ${new Date().toISOString()}\n`);
+const path = require('path');
+try {
+  fs.appendFileSync(path.join(__dirname, 'debug.log'), `server.js loaded at ${new Date().toISOString()}\n`);
+} catch (err) {
+  console.error('DEBUG LOGGING FAILED:', err);
+}
 
 const express = require('express');
-const path = require('path');
 const engine = require('ejs-mate');
 require('dotenv').config();
 
@@ -14,14 +18,16 @@ const logger = require('./utils/logger');
 logger.debug('Starting QSys server...');
 
 const receptionRoutes = require('./routes/reception');
-const session = require('express-session');
+const generalRoutes   = require('./routes/general');
+const adminRoutes     = require('./routes/admin');
+const session         = require('express-session');
 
 const app = express();
 
 // ─── Express session middleware ─────────────────────────────────
 app.use(session({
   key: 'qsys_session',
-  secret: process.env.SESSION_SECRET || 'f01a7775987fc5cc47...bf4ccf913cc14b19a7db759b72a75a85324780869648bcce7e994fbb6b9',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -50,24 +56,15 @@ app.use((req, res, next) => {
 // ─── Root route with redirect logic ─────────────────────────────
 app.get('/', (req, res) => {
   if (req.session && req.session.user) {
-    if (req.session.user.role === 'admin') {
-      return res.redirect('/admin');
-    } else if (req.session.user.role === 'staff') {
-      return res.redirect('/reception');
-    }
+    const { role } = req.session.user;
+    return res.redirect(role === 'admin' ? '/admin' : '/reception');
   }
   res.redirect('/login');
 });
 
 // ─── Mount application routes ───────────────────────────────────
-const generalRoutes = require('./routes/general');
 app.use('/', generalRoutes);
-
-const adminRoutes = require('./routes/admin');
 app.use('/admin', adminRoutes);
-
-const staffRoutes = require('./routes/reception');
-app.use('/reception', staffRoutes);
 app.use('/reception', receptionRoutes);
 
 // ─── Centralized Error Handler ─────────────────────────────────
