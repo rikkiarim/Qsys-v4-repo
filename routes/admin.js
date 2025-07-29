@@ -204,6 +204,28 @@ router.post('/users/delete/:uid', isAuthenticated, isAdmin, async (req, res) => 
   }
 });
 
+// Edit user (name, role, branch)
+router.post('/users/edit/:uid', isAuthenticated, isAdmin, async (req, res) => {
+  const { uid } = req.params;
+  const { name, role, branch } = req.body;
+  try {
+    // 1. Update Firestore user profile
+    await admin.firestore().collection('users').doc(uid).update({
+      name,
+      role,
+      branch,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+    // 2. Optionally update Auth displayName
+    await admin.auth().updateUser(uid, { displayName: name });
+    req.session.success = 'User updated successfully!';
+    res.redirect('/admin/users');
+  } catch (err) {
+    req.session.error = 'Failed to update user: ' + err.message;
+    res.redirect('/admin/users');
+  }
+});
+
 // =====================
 // REPORTS (stub)
 // =====================
