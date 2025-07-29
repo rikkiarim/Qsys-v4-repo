@@ -4,6 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const admin = require('firebase-admin');
 
+// ─── DEBUG: Raw PRIVATE_KEY env inspection ─────────────────────────
+console.log('Loaded PRIVATE_KEY starts with:', process.env.FIREBASE_PRIVATE_KEY.slice(0,30));
+console.log('Contains literal "\\n"?', process.env.FIREBASE_PRIVATE_KEY.includes('\\n'));
+
 // Build credentials from environment variables
 const serviceAccount = {
   projectId: process.env.FIREBASE_PROJECT_ID,
