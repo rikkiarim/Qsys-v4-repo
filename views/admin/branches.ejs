@@ -1,5 +1,36 @@
 <% layout('layouts/main') %>
 <section>
   <h2>Branch Management</h2>
-  <p>This is where you will manage branches.</p>
+
+  <form action="/admin/branches/add" method="POST" style="margin-bottom:2rem;">
+    <input type="text" name="name" placeholder="Branch Name" required>
+    <input type="text" name="code" placeholder="Branch Code" required>
+    <button type="submit">Add Branch</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Code</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% branches.forEach(function(branch) { %>
+        <tr>
+          <form action="/admin/branches/edit/<%= branch.id %>" method="POST">
+            <td><input type="text" name="name" value="<%= branch.name %>" required></td>
+            <td><input type="text" name="code" value="<%= branch.code %>" required></td>
+            <td>
+              <button type="submit">Save</button>
+            </form>
+              <form action="/admin/branches/delete/<%= branch.id %>" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('Delete this branch?');">Delete</button>
+              </form>
+            </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
 </section>
