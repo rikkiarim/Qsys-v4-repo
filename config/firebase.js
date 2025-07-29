@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const admin = require('firebase-admin');
+const firebase = require('../../config/firebase');
 
 // ─── DEBUG: Server Time & Raw Key Inspection ───────────────────────
 console.log('Server time:', new Date().toISOString());
