@@ -134,7 +134,15 @@ router.post('/branches/delete/:id', isAuthenticated, isAdmin, async (req, res) =
 router.get('/users', isAuthenticated, isAdmin, async (req, res) => {
   try {
     const usersSnap = await admin.firestore().collection('users').get();
-    const users = usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // FIX: Always include `uid` property on each user object (use doc.data().uid OR doc.id fallback)
+    const users = usersSnap.docs.map(doc => {
+      const data = doc.data();
+      // Prefer data.uid (from Auth) but fallback to doc.id for legacy users
+      return {
+        ...data,
+        uid: data.uid || doc.id
+      };
+    });
     // Load branches for dropdown (for user creation form)
     const branchesSnap = await admin.firestore().collection('branches').get();
     const branches = branchesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -161,7 +169,7 @@ router.post('/users/add', isAuthenticated, isAdmin, async (req, res) => {
     // 1. Create user in Firebase Auth
     userRecord = await admin.auth().createUser({
       email,
-      password, // Make sure to validate in frontend and backend!
+      password,
       displayName: name,
       disabled: false
     });
