@@ -34,7 +34,7 @@ const serviceAccount = {
 // ─── DEBUG: Confirm serviceAccount load ─────────────────────────
 try {
   fs.appendFileSync(
-    path.join(__dirname, './debug.log'),
+    path.join(__dirname, '../debug.log'),
     `Loaded serviceAccount with keys: ${Object.keys(serviceAccount).join(', ')} at ${new Date().toISOString()}\n`
   );
 } catch (e) {
@@ -49,7 +49,7 @@ try {
   console.log('✅ Firebase Admin initialized using environment variables');
   try {
     fs.appendFileSync(
-      path.join(__dirname, './debug.log'),
+      path.join(__dirname, '../debug.log'),
       `Firebase Admin initialized at ${new Date().toISOString()}\n`
     );
   } catch (e) {
@@ -59,7 +59,7 @@ try {
   console.error('❌ Firebase Admin init error:', err);
   try {
     fs.appendFileSync(
-      path.join(__dirname, './debug.log'),
+      path.join(__dirname, '../debug.log'),
       `Firebase init error: ${err.message}\n`,
     );
   } catch (e) {
