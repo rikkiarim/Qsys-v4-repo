@@ -1,6 +1,7 @@
 // /utils/getNextQueueNumber.js
 
-const admin = require('../config/firebase.js_backup');
+// Pull in the proper Firebase config (not the backup)
+const admin = require('../config/firebase');
 const db    = admin.firestore();
 
 /**
