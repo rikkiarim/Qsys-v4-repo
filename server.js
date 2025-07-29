@@ -17,14 +17,15 @@ require('dotenv').config();
 const logger = require('./utils/logger');
 logger.debug('Starting QSys server...');
 
-const receptionRoutes = require('./routes/reception');
-const generalRoutes   = require('./routes/general');
-const adminRoutes     = require('./routes/admin');
-const session         = require('express-session');
-
 const app = express();
 
+// ─── Time Sync Check Endpoint ──────────────────────────────────
+app.get('/_time', (req, res) => {
+  res.json({ serverTime: new Date().toISOString() });
+});
+
 // ─── Express session middleware ─────────────────────────────────
+const session = require('express-session');
 app.use(session({
   key: 'qsys_session',
   secret: process.env.SESSION_SECRET,
@@ -56,13 +57,17 @@ app.use((req, res, next) => {
 // ─── Root route with redirect logic ─────────────────────────────
 app.get('/', (req, res) => {
   if (req.session && req.session.user) {
-    const { role } = req.session.user;
+    const role = req.session.user.role;
     return res.redirect(role === 'admin' ? '/admin' : '/reception');
   }
   res.redirect('/login');
 });
 
 // ─── Mount application routes ───────────────────────────────────
+const generalRoutes   = require('./routes/general');
+const adminRoutes     = require('./routes/admin');
+const receptionRoutes = require('./routes/reception');
+
 app.use('/', generalRoutes);
 app.use('/admin', adminRoutes);
 app.use('/reception', receptionRoutes);
