@@ -10,14 +10,16 @@
 
   <nav class="sidebar-nav">
     <% if (user.role === 'admin') { %>
-      <a href="/admin">Dashboard</a>
-      <a href="/admin/branches">Branch Mgmt</a>
-      <a href="/admin/users">Users</a>
-      <a href="/admin/reports">Reports</a>
-    <% } else if (user.role === 'staff') { %>
-      <a href="/reception">Reception</a>
-      <a href="/reception/display" target="_blank">External Display</a>
-    <% } %>
+      <% if (user.role === 'admin') { %>
+    <a href="/admin">Dashboard</a>
+    <a href="/admin/branches">Branches</a>
+    <a href="/admin/users">Users</a>
+    <a href="/admin/reports">Reports</a>
+    <a href="/admin/queue-monitor">Queue Monitor</a>
+  <% } else if (user.role === 'staff') { %>
+    <a href="/reception">Reception</a>
+    <a href="/reception/display" target="_blank">External Display</a>
+  <% } %>
   </nav>
 
   <form action="/logout" method="POST" class="sidebar-logout">
