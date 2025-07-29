@@ -4,15 +4,28 @@ const fs = require('fs');
 const path = require('path');
 const admin = require('firebase-admin');
 
-// ─── DEBUG: Raw PRIVATE_KEY env inspection ─────────────────────────
-console.log('Loaded PRIVATE_KEY starts with:', process.env.FIREBASE_PRIVATE_KEY.slice(0,30));
-console.log('Contains literal "\\n"?', process.env.FIREBASE_PRIVATE_KEY.includes('\\n'));
+// ─── DEBUG: Server Time & Raw Key Inspection ───────────────────────
+console.log('Server time:', new Date().toISOString());
+console.log('Loaded PRIVATE_KEY starts with:', process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.slice(0,30) : 'undefined');
+console.log('Contains literal "\\n"?', process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.includes('\\n') : false);
+console.log('PRIVATE_KEY ends with:', process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.slice(-30) : 'undefined');
+
+// Decode Base64 or unescape newlines
+let rawKey;
+if (process.env.FIREBASE_PRIVATE_KEY_B64) {
+  rawKey = Buffer.from(process.env.FIREBASE_PRIVATE_KEY_B64, 'base64').toString('utf8');
+} else {
+  rawKey = process.env.FIREBASE_PRIVATE_KEY
+    .replace(/\\r/g, '')          // strip any stray CR
+    .replace(/\\n/g, '\n')       // unescape newlines
+    .trim();                        // remove leading/trailing whitespace
+}
 
 // Build credentials from environment variables
 const serviceAccount = {
   projectId: process.env.FIREBASE_PROJECT_ID,
   clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  privateKey: rawKey,
 };
 
 // ─── DEBUG: Confirm serviceAccount load ─────────────────────────
@@ -25,20 +38,20 @@ try {
   console.error('DEBUG LOG WRITE FAILED:', e);
 }
 
+// Initialize Firebase Admin
 try {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
-  // ─── DEBUG: Firebase initialized ─────────────────────────────
+  console.log('✅ Firebase Admin initialized using environment variables');
   try {
     fs.appendFileSync(
       path.join(__dirname, './debug.log'),
-      `Firebase Admin initialized using environment variables at ${new Date().toISOString()}\n`
+      `Firebase Admin initialized at ${new Date().toISOString()}\n`
     );
   } catch (e) {
     console.error('DEBUG LOG WRITE FAILED:', e);
   }
-  console.log('✅ Firebase Admin initialized using environment variables');
 } catch (err) {
   console.error('❌ Firebase Admin init error:', err);
   try {
