@@ -18,8 +18,6 @@ router.get('/', isAuthenticated, isAdmin, (req, res) => {
 // =====================
 // BRANCH MANAGEMENT
 // =====================
-
-// List all branches with pagination & case-insensitive substring search
 router.get('/branches', isAuthenticated, isAdmin, async (req, res) => {
   try {
     const pageSize = parseInt(req.query.pageSize) || 10;
@@ -86,7 +84,6 @@ router.get('/branches', isAuthenticated, isAdmin, async (req, res) => {
   }
 });
 
-// Add branch
 router.post('/branches/add', isAuthenticated, isAdmin, async (req, res) => {
   try {
     const { name, code } = req.body;
@@ -99,7 +96,6 @@ router.post('/branches/add', isAuthenticated, isAdmin, async (req, res) => {
   }
 });
 
-// Edit branch
 router.post('/branches/edit/:id', isAuthenticated, isAdmin, async (req, res) => {
   try {
     const { name, code } = req.body;
@@ -113,7 +109,6 @@ router.post('/branches/edit/:id', isAuthenticated, isAdmin, async (req, res) => 
   }
 });
 
-// Delete branch
 router.post('/branches/delete/:id', isAuthenticated, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -134,7 +129,7 @@ router.post('/branches/delete/:id', isAuthenticated, isAdmin, async (req, res) =
 router.get('/users', isAuthenticated, isAdmin, async (req, res) => {
   try {
     const usersSnap = await admin.firestore().collection('users').get();
-    // Always provide a .branch field (from any source)
+    // Always provide .branch for frontend
     const users = usersSnap.docs.map(doc => {
       const data = doc.data();
       return {
@@ -172,14 +167,14 @@ router.post('/users/add', isAuthenticated, isAdmin, async (req, res) => {
       disabled: false
     });
 
-    // Write both fields for compatibility!
+    // Write both fields for compatibility
     await admin.firestore().collection('users').doc(userRecord.uid).set({
       uid: userRecord.uid,
       name,
       email,
       role,
-      branch,                 // Unified
-      assignedBranch: branch, // For legacy
+      branch: branch || "",
+      assignedBranch: branch || "",
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
@@ -211,13 +206,17 @@ router.post('/users/delete/:uid', isAuthenticated, isAdmin, async (req, res) => 
 // Edit user (name, role, branch)
 router.post('/users/edit/:uid', isAuthenticated, isAdmin, async (req, res) => {
   const { uid } = req.params;
-  const { name, role, branch } = req.body;
+  let { name, role, branch } = req.body;
+  // Defensive: ensure branch is always string for Firestore!
+  if (role === 'admin' || typeof branch === 'undefined' || branch === null) {
+    branch = '';
+  }
   try {
     await admin.firestore().collection('users').doc(uid).update({
       name,
       role,
-      branch,
-      assignedBranch: branch, // For legacy
+      branch: branch,
+      assignedBranch: branch,
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
     await admin.auth().updateUser(uid, { displayName: name });
@@ -228,7 +227,6 @@ router.post('/users/edit/:uid', isAuthenticated, isAdmin, async (req, res) => {
     res.redirect('/admin/users');
   }
 });
-
 
 // =====================
 // REPORTS (stub)
