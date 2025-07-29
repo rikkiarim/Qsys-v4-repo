@@ -1,61 +1,68 @@
 // server.js
 
-// ─── Boot Marker (with safe fallback) ───────────────────────────
 const fs = require('fs');
 const path = require('path');
+const express = require('express');
+const engine = require('ejs-mate');
+require('dotenv').config();
+const session = require('express-session');
+const logger = require('./utils/logger');
+
+const app = express();
+
+// Basic boot logging
 try {
   fs.appendFileSync(path.join(__dirname, 'debug.log'), `server.js loaded at ${new Date().toISOString()}\n`);
 } catch (err) {
   console.error('DEBUG LOGGING FAILED:', err);
 }
 
-const express = require('express');
-const engine = require('ejs-mate');
-require('dotenv').config();
-
-// ─── Logger Setup ───────────────────────────────────────────────
-const logger = require('./utils/logger');
-
 logger.debug('Starting QSys server...');
 
-const app = express();
-
-// ─── Time Sync Check Endpoint ──────────────────────────────────
+// Time sync check endpoint
 app.get('/_time', (req, res) => {
   res.json({ serverTime: new Date().toISOString() });
 });
 
-// ─── Express session middleware ─────────────────────────────────
-const session = require('express-session');
+// Express session
 app.use(session({
   key: 'qsys_session',
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    // your cookie settings
+    // session cookie settings
   }
 }));
 
-// ─── Setup EJS with ejs-mate ────────────────────────────────────
+// Flash message middleware (for all views)
+app.use((req, res, next) => {
+  res.locals.success = req.session.success || null;
+  res.locals.error = req.session.error || null;
+  delete req.session.success;
+  delete req.session.error;
+  next();
+});
+
+// EJS with ejs-mate
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// ─── Static assets ──────────────────────────────────────────────
+// Static assets
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ─── Body parsing middleware ───────────────────────────────────
+// Body parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// ─── Request Logging ────────────────────────────────────────────
+// Request logging
 app.use((req, res, next) => {
   logger.debug(`→ ${req.method} ${req.originalUrl}`);
   next();
 });
 
-// ─── Root route with redirect logic ─────────────────────────────
+// Root route: redirects by role
 app.get('/', (req, res) => {
   if (req.session && req.session.user) {
     const role = req.session.user.role;
@@ -64,7 +71,7 @@ app.get('/', (req, res) => {
   res.redirect('/login');
 });
 
-// ─── Mount application routes ───────────────────────────────────
+// Application routes
 const generalRoutes   = require('./routes/general');
 const adminRoutes     = require('./routes/admin');
 const receptionRoutes = require('./routes/reception');
@@ -73,7 +80,7 @@ app.use('/', generalRoutes);
 app.use('/admin', adminRoutes);
 app.use('/reception', receptionRoutes);
 
-// ─── Centralized Error Handler ─────────────────────────────────
+// Centralized error handler
 app.use((err, req, res, next) => {
   logger.error(err.stack || err);
   res.status(500).render('error', {
@@ -82,7 +89,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ─── Catch Unhandled Rejections & Exceptions ────────────────────
+// Handle unhandled rejections & exceptions
 process.on('unhandledRejection', reason => {
   logger.error(`Unhandled Rejection: ${reason}`);
 });
@@ -91,7 +98,7 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
-// ─── Start the server ───────────────────────────────────────────
+// Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`QSys running at http://localhost:${PORT}`);
