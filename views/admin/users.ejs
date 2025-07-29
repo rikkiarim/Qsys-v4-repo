@@ -94,21 +94,23 @@
         </table>
       </div>
       <!-- Pagination Controls (Branch-style, always shown) -->
-      <div class="pagination-controls">
-        <button class="btn btn-small user-pager-btn"
-                style="min-width:72px;"
-                <%= hasPrev ? '' : 'disabled' %>
-                onclick="if(this.disabled)return; window.location.href='/admin/users?direction=prev&cursor=<%= prevCursor %>';">
-          Prev
-        </button>
-        <button class="btn btn-small user-pager-btn"
-                style="min-width:72px;"
-                <%= hasNext ? '' : 'disabled' %>
-                onclick="if(this.disabled)return; window.location.href='/admin/users?direction=next&cursor=<%= nextCursor %>';">
-          Next
-        </button>
-        <span class="pagination-info" style="color:#888;margin-left:0.7rem;">Page size: <%= pageSize || 10 %></span>
-      </div>
+      <div style="margin-top: 1.3rem;">
+  <button
+    id="prev-page"
+    style="padding: .5rem 1.2rem; margin-right:.6rem; border-radius:7px; border:1px solid #AC8968; background:#F3F3F3; color:#93785B;"
+    <% if (!hasPrev) { %>disabled style="opacity:.6;"<% } %>
+    onclick="if(this.disabled)return; window.location.href='/admin/users?direction=prev&cursor=<%= prevCursor %>';">
+    Prev
+  </button>
+  <button
+    id="next-page"
+    style="padding: .5rem 1.2rem; border-radius:7px; border:1px solid #AC8968; background:#F3F3F3; color:#93785B;"
+    <% if (!hasNext) { %>disabled style="opacity:.6;"<% } %>
+    onclick="if(this.disabled)return; window.location.href='/admin/users?direction=next&cursor=<%= nextCursor %>';">
+    Next
+  </button>
+  <span style="font-size:.97em; color:#999; margin-left:1.4rem;"> Page size: <%= pageSize %> </span>
+</div>
     </div>
   </div>
 </section>
