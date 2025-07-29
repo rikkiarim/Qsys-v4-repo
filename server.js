@@ -14,7 +14,7 @@ const engine = require('ejs-mate');
 require('dotenv').config();
 
 // ─── Logger Setup ───────────────────────────────────────────────
-const logger = require('../utils/logger');
+const logger = require('./utils/logger');
 logger.debug('Starting QSys server...');
 
 const app = express();
