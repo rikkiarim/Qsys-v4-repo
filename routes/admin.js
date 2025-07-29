@@ -125,12 +125,33 @@ router.post('/branches/delete/:id', isAuthenticated, isAdmin, async (req, res) =
 // USER MANAGEMENT
 // =====================
 
-// List users
+// USER MANAGEMENT WITH PAGINATION
 router.get('/users', isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const usersSnap = await admin.firestore().collection('users').get();
-    // Always provide .branch for frontend
-    const users = usersSnap.docs.map(doc => {
+    const pageSize = 10;
+    let usersQuery = admin.firestore().collection('users').orderBy('name');
+    const { direction, cursor } = req.query;
+
+    let usersSnap;
+    if (cursor) {
+      const cursorDoc = await admin.firestore().collection('users').doc(cursor).get();
+      if (cursorDoc.exists) {
+        if (direction === 'prev') {
+          // For previous, reverse direction and limitToLast
+          usersQuery = usersQuery.endBefore(cursorDoc).limitToLast(pageSize);
+        } else {
+          usersQuery = usersQuery.startAfter(cursorDoc).limit(pageSize);
+        }
+      }
+      // else fallback to first page if bad cursor
+      else usersQuery = usersQuery.limit(pageSize);
+    } else {
+      usersQuery = usersQuery.limit(pageSize);
+    }
+
+    usersSnap = await usersQuery.get();
+
+    let users = usersSnap.docs.map(doc => {
       const data = doc.data();
       return {
         ...data,
@@ -138,6 +159,25 @@ router.get('/users', isAuthenticated, isAdmin, async (req, res) => {
         uid: data.uid || doc.id
       };
     });
+
+    if (direction === 'prev') users = users.reverse();
+
+    // For paging
+    const firstUser = users[0];
+    const lastUser = users[users.length - 1];
+
+    // For Next: fetch one more user to check if there's more (for "hasNext")
+    let hasNext = false;
+    if (users.length === pageSize) {
+      let nextQuery = admin.firestore().collection('users').orderBy('name').startAfter(usersSnap.docs[usersSnap.docs.length - 1]).limit(1);
+      let nextSnap = await nextQuery.get();
+      hasNext = !nextSnap.empty;
+    }
+
+    // For Previous: if cursor given, show prev button
+    const hasPrev = !!cursor;
+
+    // Get branches for dropdown
     const branchesSnap = await admin.firestore().collection('branches').get();
     const branches = branchesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
@@ -147,10 +187,15 @@ router.get('/users', isAuthenticated, isAdmin, async (req, res) => {
       users,
       branches,
       hideSidebar: false,
-      layout: 'layouts/main'
+      layout: 'layouts/main',
+      pageSize,
+      prevCursor: firstUser ? firstUser.uid : null,
+      nextCursor: lastUser ? lastUser.uid : null,
+      hasPrev,
+      hasNext
     });
   } catch (err) {
-    req.session.error = 'Failed to load users.';
+    req.session.error = 'Failed to load users: ' + err.message;
     res.redirect('/admin');
   }
 });
