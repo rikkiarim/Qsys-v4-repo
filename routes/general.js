@@ -1,4 +1,5 @@
 // routes/general.js
+console.log('general.js __dirname:', __dirname);
 
 const express = require('express');
 const router = express.Router();
