@@ -1,12 +1,11 @@
 // routes/general.js
 
 const express = require('express');
-const admin = require('../config/firebase'); // Firebase Admin SDK
 const router = express.Router();
 const logger = require('../utils/logger');
 
-// Node 18+ has built-in fetch; no need for node-fetch import
-// const fetch = require('node-fetch');
+// Import initialized Firebase Admin SDK from environment-based config
+const admin = require('../config/firebase');
 
 const getManilaDateKey = require('../utils/getManilaDateKey');
 const getNextQueueNumber = require('../utils/getNextQueueNumber');
