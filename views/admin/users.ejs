@@ -1,16 +1,16 @@
 <% layout('layouts/main') %>
-<section class="admin-content">
+<section class="admin-content" style="max-width:1300px;margin:0 auto;padding-top:1.7rem;">
   <h1 class="page-title" style="margin-bottom: 2rem;">User Management</h1>
   <!-- Toasts -->
-  <% if (typeof success !== "undefined") { %>
+  <% if (typeof success !== "undefined" && success) { %>
     <div class="toast toast-success"><%= success %></div>
   <% } %>
-  <% if (typeof error !== "undefined") { %>
+  <% if (typeof error !== "undefined" && error) { %>
     <div class="toast toast-error"><%= error %></div>
   <% } %>
-  <div class="flex-container" style="gap:2.2rem;flex-wrap:wrap;align-items: flex-start;">
+  <div class="flex-container" style="gap:2.2rem;flex-wrap:wrap;align-items: flex-start;justify-content: center;">
     <!-- Add User Form -->
-    <div class="card user-form-card" style="min-width:340px;max-width:390px;background:#D6EFD8;">
+    <div class="card user-form-card" style="min-width:340px;max-width:390px;background:#D6EFD8;box-shadow: 0 3px 22px 0 rgba(24,48,24,0.09);">
       <h2 class="card-title" style="margin-bottom: 1.2rem;">Add New User</h2>
       <form method="POST" action="/admin/users/add" class="form-column">
         <div class="form-group">
@@ -46,9 +46,9 @@
       </form>
     </div>
     <!-- User List Table -->
-    <div class="card user-table-card" style="flex:2 1 500px; min-width:320px; background:#F6FBF5;">
+    <div class="card user-table-card" style="flex:2 1 500px; min-width:320px; background:#F6FBF5;box-shadow: 0 3px 22px 0 rgba(24,48,24,0.09);">
       <h2 class="card-title" style="margin-bottom: 1.2rem;">All Users</h2>
-      <div class="table-responsive">
+      <div class="table-responsive" style="overflow-x:auto;">
         <table class="data-table">
           <thead>
             <tr>

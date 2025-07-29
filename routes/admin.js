@@ -134,16 +134,15 @@ router.post('/branches/delete/:id', isAuthenticated, isAdmin, async (req, res) =
 router.get('/users', isAuthenticated, isAdmin, async (req, res) => {
   try {
     const usersSnap = await admin.firestore().collection('users').get();
-    // FIX: Always include `uid` property on each user object (use doc.data().uid OR doc.id fallback)
+    // Always provide a .branch field (from any source)
     const users = usersSnap.docs.map(doc => {
       const data = doc.data();
-      // Prefer data.uid (from Auth) but fallback to doc.id for legacy users
       return {
         ...data,
+        branch: data.branch || data.assignedBranch || data.assignedbranch || data.branchCode || "",
         uid: data.uid || doc.id
       };
     });
-    // Load branches for dropdown (for user creation form)
     const branchesSnap = await admin.firestore().collection('branches').get();
     const branches = branchesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
@@ -166,7 +165,6 @@ router.post('/users/add', isAuthenticated, isAdmin, async (req, res) => {
   const { name, email, password, role, branch } = req.body;
   let userRecord;
   try {
-    // 1. Create user in Firebase Auth
     userRecord = await admin.auth().createUser({
       email,
       password,
@@ -174,20 +172,20 @@ router.post('/users/add', isAuthenticated, isAdmin, async (req, res) => {
       disabled: false
     });
 
-    // 2. Add user profile to Firestore
+    // Write both fields for compatibility!
     await admin.firestore().collection('users').doc(userRecord.uid).set({
       uid: userRecord.uid,
       name,
       email,
       role,
-      branch,
+      branch,                 // Unified
+      assignedBranch: branch, // For legacy
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
     req.session.success = 'User added successfully!';
     res.redirect('/admin/users');
   } catch (error) {
-    // Clean up: if Auth user was created but Firestore failed
     if (userRecord && userRecord.uid) {
       await admin.auth().deleteUser(userRecord.uid);
     }
@@ -200,9 +198,7 @@ router.post('/users/add', isAuthenticated, isAdmin, async (req, res) => {
 router.post('/users/delete/:uid', isAuthenticated, isAdmin, async (req, res) => {
   const { uid } = req.params;
   try {
-    // 1. Delete from Firebase Auth
     await admin.auth().deleteUser(uid);
-    // 2. Delete from Firestore
     await admin.firestore().collection('users').doc(uid).delete();
     req.session.success = 'User deleted.';
     res.redirect('/admin/users');
@@ -217,14 +213,13 @@ router.post('/users/edit/:uid', isAuthenticated, isAdmin, async (req, res) => {
   const { uid } = req.params;
   const { name, role, branch } = req.body;
   try {
-    // 1. Update Firestore user profile
     await admin.firestore().collection('users').doc(uid).update({
       name,
       role,
       branch,
+      assignedBranch: branch, // For legacy
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
-    // 2. Optionally update Auth displayName
     await admin.auth().updateUser(uid, { displayName: name });
     req.session.success = 'User updated successfully!';
     res.redirect('/admin/users');
@@ -233,6 +228,7 @@ router.post('/users/edit/:uid', isAuthenticated, isAdmin, async (req, res) => {
     res.redirect('/admin/users');
   }
 });
+
 
 // =====================
 // REPORTS (stub)
