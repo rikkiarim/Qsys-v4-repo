@@ -1,7 +1,46 @@
-<% layout('layouts/main') %>
+<% /* Extends new layout: header + nav + footer */ %>
 
-<section class="dashboard-content">
-  <h2>Admin Dashboard</h2>
-  <p>Welcome, <%= user.email || user.name %>! You are logged in as <strong><%= user.role %></strong>.</p>
-  <p>This is your dummy dashboard content.</p>
-</section>
+<div class="text-center mb-2">
+  <h1 style="font-family: var(--font-alt); font-size:2em; font-weight:700; letter-spacing:.8px;">
+    Admin Dashboard
+  </h1>
+  <p style="font-size:1.13em; color: #508D4E; margin-top:.7em;">
+    Welcome, <%= user && user.name ? user.name : 'Admin' %>!
+  </p>
+</div>
+
+<!-- Summary Cards -->
+<div style="display:flex; gap:2rem; flex-wrap:wrap; justify-content: center; margin-bottom:2.5rem;">
+  <div class="summary-card">
+    <div class="summary-label">Queued</div>
+    <div class="summary-value"><%= stats.queued || 0 %></div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-label">Served</div>
+    <div class="summary-value"><%= stats.served || 0 %></div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-label">Completed</div>
+    <div class="summary-value"><%= stats.completed || 0 %></div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-label">Skipped</div>
+    <div class="summary-value"><%= stats.skipped || 0 %></div>
+  </div>
+</div>
+
+<!-- Links to Modules -->
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1.7rem; margin-bottom:2rem;">
+  <a href="/admin/branches" class="btn btn-primary text-center">Manage Branches</a>
+  <a href="/admin/users" class="btn btn-primary text-center">Manage Users</a>
+  <a href="/admin/reports" class="btn btn-primary text-center">View Reports</a>
+  <a href="/admin/queue-monitor" class="btn btn-primary text-center">Live Queue Monitor</a>
+</div>
+
+<!-- Chart placeholder -->
+<div class="card" style="margin-top:2.7rem; padding:2rem;">
+  <h2 class="mb-1" style="font-size:1.2em; font-weight:600; font-family: var(--font-alt);">Today’s Queue Summary</h2>
+  <div id="dashboard-chart" style="height:320px;">
+    <!-- Chart.js or similar will render here -->
+  </div>
+</div>
